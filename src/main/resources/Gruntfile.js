@@ -8,7 +8,7 @@ module.exports = function (grunt) {
                 'Gruntfile.js',
                 'assets/js/spa/*.js',
                 'assets/js/custom.js',
-                'assets/js/admin-handlebars.js'
+                'assets/js/admin.js'
             ],
             options: {
                 globals: {
@@ -71,6 +71,8 @@ module.exports = function (grunt) {
                     'bower_components/jquery/dist/jquery.js',
                     'bower_components/jquery/dist/jquery.min.js',
                     'bower_components/jquery-validation/dist/jquery.validate.min.js',
+                    'bower_components/tablesorter/dist/js/jquery.tablesorter.js',
+                    'bower_components/tablesorter/dist/js/jquery.tablesorter.widgets.js',
                     'bower_components/bootstrap/dist/js/bootstrap.js',
                     'bower_components/bootstrap/dist/js/bootstrap.min.js',
                     'bower_components/handlebars/handlebars.js',
@@ -82,6 +84,7 @@ module.exports = function (grunt) {
                 expand: true,
                 flatten: true,
                 src: [
+                    'bower_components/tablesorter/dist/css/theme.bootstrap.min.css',
                     'bower_components/bootstrap/dist/css/*'
                 ],
                 dest: 'static/css'

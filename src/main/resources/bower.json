@@ -15,6 +15,7 @@
     "jquery": "^2.2.2",
     "bootstrap": "^3.3.6",
     "handlebars": "^4.0.5",
-    "jquery-validation": "^1.15.0"
+    "jquery-validation": "^1.15.0",
+    "tablesorter": "jquery.tablesorter#^2.26.2"
   }
 }
