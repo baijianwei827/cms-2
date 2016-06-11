@@ -10,17 +10,18 @@ import com.elliothutchinson.cms.repository.FeatureRepository;
 
 @Service
 public class FeatureService {
-	
-	private FeatureRepository featureRepository;
-	
-	protected FeatureService() {}
-	
-	@Autowired
-	public FeatureService(FeatureRepository featureRepository) {
-		this.featureRepository = featureRepository;
-	}
-	
-	public List<Feature> findAllFeatures() {
-		return featureRepository.findTop10ByPublishIsTrueOrderByDateCreatedDesc();
-	}
+
+    private FeatureRepository featureRepository;
+
+    protected FeatureService() {
+    }
+
+    @Autowired
+    public FeatureService(FeatureRepository featureRepository) {
+        this.featureRepository = featureRepository;
+    }
+
+    public List<Feature> findAllFeatures() {
+        return featureRepository.findTop10ByPublishIsTrueOrderByDateCreatedDesc();
+    }
 }
