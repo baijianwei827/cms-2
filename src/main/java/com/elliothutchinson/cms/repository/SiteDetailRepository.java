@@ -7,7 +7,8 @@ import org.springframework.data.repository.CrudRepository;
 import com.elliothutchinson.cms.domain.SiteDetail;
 
 public interface SiteDetailRepository extends CrudRepository<SiteDetail, Long> {
-	
-	SiteDetail findOneByName(String name);
-	List<SiteDetail> findAllByOrderByName();
+
+    SiteDetail findOneByName(String name);
+
+    List<SiteDetail> findAllByOrderByName();
 }

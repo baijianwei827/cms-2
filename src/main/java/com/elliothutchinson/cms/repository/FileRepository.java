@@ -7,8 +7,12 @@ import org.springframework.data.repository.CrudRepository;
 import com.elliothutchinson.cms.domain.File;
 
 public interface FileRepository extends CrudRepository<File, Long> {
-	
-	List<File> findByFilename(String filename);
-	List<File> findAllByOrderByFilename();
-	List<File> findAllByArticleIsNullOrderByFilename();
+
+    List<File> findByFilename(String filename);
+
+    List<File> findAllByOrderByFilename();
+
+    List<File> findAllByArticleIsNullOrderByFilename();
+
+    Long countByArticleId(Long id);
 }
