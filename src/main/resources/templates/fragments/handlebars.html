@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="templates">
+
+<script id="error-template" type="text/x-handlebars-template">
+<div class="alert alert-warning alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  <strong>JavaScript Error:</strong> {{message}}
+</div>
+</script>
+
+<script id="success-template" type="text/x-handlebars-template">
+<div class="alert alert-info alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  <strong>Operation Successful:</strong> {{message}}
+</div>
+</script>
+
+<script id="sidebar-template" type="text/x-handlebars-template">
+<div>
+  <h4>Admin</h4>
+  <div>
+    <p>Logged in as: {{#if username}}{{username}} <a href="/admin">(logout)</a>
+       {{else}}not logged in <a href="/admin">(login)</a>{{/if}}
+    </p>
+  </div>
+</div>
+</script>
+
+<script id="metric-template" type="text/x-handlebars-template">
+<div>
+  <h4>{{title}}</h4>
+  <div>
+    <ul>
+      {{#if authors}}<li>Authors: {{authors}}{{/if}}
+      {{#if admins}}<ul><li>Admins: {{admins}}</li></ul></li>{{else}}</li>{{/if}}
+      {{#if sections}}<li>Sections: {{sections}}</li>{{/if}}
+      {{#if articles}}<li>Articles: {{articles}}</li>{{/if}}
+      {{#if files}}<li>Files: {{files}}</li>{{/if}}
+      {{#if archives}}<li>Archives: {{archives}}</li>{{/if}}
+      {{#if features}}<li>Features: {{features}}</li>{{/if}}
+      {{#if tags}}<li>Tags: {{tags}}</li>{{/if}}
+      {{#if comments}}<li>Comments: {{comments}}</li>{{/if}}
+      {{#if siteDetails}}<li>Site Details: {{siteDetails}}</li>{{/if}}
+    </ul>
+  </div>
+</div>
+</script>
+
+<script id="login-template" type="text/x-handlebars-template">
+<div>
+  <h3>Please login to continue</h3>
+  <form id="login-form" class="form-horizontal" action="#">
+    <div class="form-group">
+      <label class="control-label col-xs-3" for="username">Username</label>
+      <div class="col-xs-7">
+        <input id="username" name="username" class="form-control" placeholder="Username" type="text">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-xs-3" for="password">Password</label>
+      <div class="col-xs-7">
+        <input id="password" name="password" class="form-control" placeholder="Password" type="password">
+      </div>
+    </div>    
+    <div class="form-group">
+      <div class="col-xs-offset-3 col-xs-5">
+        <button class="btn btn-default" type="submit">Login</button>
+        <span class="half-tab"></span>
+        <button class="btn btn-default" type="button" onclick="$('#login-form').trigger('reset')">Clear</button>
+      </div>
+    </div>
+  </form>
+</div>
+</script>
+
+<script id="author-template" type="text/x-handlebars-template">
+<div>
+  <h3>All authors</h3>
+  <h4><a href="javascript:void(0)" onclick="cmsAdmin.getAuthorCreateTemplate()">Create new</a></h4>
+  <table id="author-table" class="table table-striped">
+    <thead>
+      <tr>
+        <th>id</th>
+        <th>username</th>
+        <th>email</th>
+        <th>admin</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each authors}}
+      <tr>
+        <td>{{id}}</td>
+        <td>{{username}}</td>
+        <td>{{email}}</td>
+        <td>{{admin}}</td>
+        <td><a href="javascript:void(0)" onclick="cmsAdmin.getAuthorUpdateTemplate(0, {{id}})">edit/remove</a></td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+</script>
+
+<script id="author-update-template" type="text/x-handlebars-template">
+<div>
+  <h3>{{#if id}}Update{{else}}Create{{/if}} Author</h3>
+  <form id="author-form" class="form-horizontal" action="#">
+    {{#if id}}
+    <div class="form-group">
+      <label class="control-label col-xs-3" for="id">Id</label>
+      <div class="col-xs-7">
+        <input id="id" name="id" class="form-control" type="text" readonly
+               {{#if id}}value="{{id}}"{{/if}}>
+      </div>
+    </div>
+    {{/if}}
+
+    <div class="form-group">
+      <label class="control-label col-xs-3" for="username">Username</label>
+      <div class="col-xs-7">
+        <input id="username" name="username" class="form-control" type="text"
+               {{#if username}}value="{{username}}"
+               {{else}}placeholder="Username"{{/if}}>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-xs-3" for="password">Password</label>
+      <div class="col-xs-7">
+        <input id="password" name="password" class="form-control" type="password"
+               {{#if password}}value="{{password}}"
+               {{else}}placeholder="Password"{{/if}}>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-xs-3" for="confirm-password">Confirm Password</label>
+      <div class="col-xs-7">
+        <input id="confirm-password" name="confirm-password" class="form-control" type="password"
+               {{#if password}}value="{{password}}"
+               {{else}}placeholder="Confirm password"{{/if}}>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-xs-3" for="email">Email</label>
+      <div class="col-xs-7">
+        <input id="email" name="email" class="form-control" type="email"
+               {{#if email}}value="{{email}}"
+               {{else}}placeholder="Email"{{/if}}>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-xs-offset-3 col-xs-3">
+        <label>
+          <input id="admin" name="admin" type="checkbox" {{#if admin}}checked{{/if}}> Make admin
+        </label>
+      </div>
+    </div> 
+    <div class="form-group">
+      <div class="col-xs-offset-3 col-xs-5">
+        {{#if id}}
+        <button class="btn btn-default" type="submit">Update</button>
+        <span class="half-tab"></span>
+        <button class="btn btn-default" type="button" onclick="cmsAdmin.getAuthorDeleteTemplate('{{id}}')">Delete</button>
+        {{else}}
+        <button class="btn btn-default" type="submit">Create</button>
+        {{/if}}
+        <span class="half-tab"></span>
+        <button class="btn btn-default" type="button" onclick="cmsAdmin.getAuthorTemplate()">Cancel</button>
+      </div>
+    </div>
+  </form>
+</div>
+</script>
+
+<script id="section-template" type="text/x-handlebars-template">
+<div>
+  <h3>All sections</h3>
+  <h4><a href="javascript:void(0)" onclick="cmsAdmin.getSectionCreateTemplate()">Create new</a></h4>
+  <table id="section-table" class="table table-striped">
+    <thead>
+      <tr>
+        <th>id</th>
+        <th>title</th>
+        <th>description</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each sections}}
+      <tr>
+        <td>{{id}}</td>
+        <td>{{title}}</td>
+        <td>
+          <button type="button" id="desc-btn" class="btn btn-default" data-toggle="tooltip" data-placement="right"
+                  title="{{#if description}}{{description}}{{else}}no description{{/if}}">view</button>
+        </td>
+        <td><a href="javascript:void(0)" onclick="cmsAdmin.getSectionUpdateTemplate(0, {{id}})">edit/remove</a></td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+</script>
+
+<script id="section-update-template" type="text/x-handlebars-template">
+<div>
+  <h3>{{#if id}}Update{{else}}Create{{/if}} Section</h3>
+  <form id="section-form" class="form-horizontal" action="#">
+    {{#if id}}
+    <div class="form-group">
+      <label class="control-label col-xs-3" for="id">Id</label>
+      <div class="col-xs-7">
+        <input id="id" name="id" class="form-control" type="text" readonly
+               {{#if id}}value="{{id}}"{{/if}}>
+      </div>
+    </div>
+    {{/if}}
+
+    <div class="form-group">
+      <label class="control-label col-xs-3" for="title">Title</label>
+      <div class="col-xs-7">
+        <input id="title" name="title" class="form-control" type="text"
+               {{#if title}}value="{{title}}"
+               {{else}}placeholder="Title"{{/if}}>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-xs-3" for="description">Description</label>
+      <div class="col-xs-7">
+        <textarea id="description" class="form-control" rows=5 cols=70
+                  {{#unless description}}placeholder="Description"{{/unless}}>{{description}}</textarea>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-xs-offset-3 col-xs-5">
+        {{#if id}}
+        <button class="btn btn-default" type="submit">Update</button>
+        <span class="half-tab"></span>
+        <button class="btn btn-default" type="button" onclick="cmsAdmin.getSectionDeleteTemplate('{{id}}')">Delete</button>
+        {{else}}
+        <button class="btn btn-default" type="submit">Create</button>
+        {{/if}}
+        <span class="half-tab"></span>
+        <button class="btn btn-default" type="button" onclick="cmsAdmin.getSectionTemplate()">Cancel</button>
+      </div>
+    </div>
+  </form>
+</div>
+</script>
+
+<script id="article-template" type="text/x-handlebars-template">
+<div>
+  <h3>All articles</h3>
+  <h4><a href="javascript:void(0)" onclick="cmsAdmin.getArticleCreateTemplate()">Create new</a></h4>
+  <table id="article-table" class="table table-striped">
+    <thead>
+      <tr>
+        <th>id</th>
+        <th>title</th>
+        <th>content</th>
+        <th>section</th>
+        <th>author</th>
+        <th>date created</th>
+        <th>date modified</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each articles}}
+      <tr>
+        <td>{{id}}</td>
+        <td>{{title}}</td>
+        <td>
+          <button type="button" id="desc-btn" class="btn btn-default" data-toggle="tooltip" data-placement="right"
+                  title="{{content}}">view</button>
+        </td>
+        <td>{{#if sectionTitle}}{{sectionTitle}} ({{sectionId}}){{else}}[none]{{/if}}</td>
+        <td>{{authorUsername}} ({{authorId}})</td>
+        <td>{{dateCreated.month}} {{dateCreated.dayOfMonth}}, {{dateCreated.year}}</td>
+        <td>{{dateModified.month}} {{dateModified.dayOfMonth}}, {{dateModified.year}}</td>
+        <td><a href="javascript:void(0)" onclick="cmsAdmin.getArticleUpdateTemplate(0, {{id}})">edit/remove</a></td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+</script>
+
+<script id="article-update-template" type="text/x-handlebars-template">
+<div>
+  <h3>{{#if id}}Update{{else}}Create{{/if}} Article</h3>
+  <form id="article-form" class="form-horizontal" action="#">
+    {{#if id}}
+    <div class="form-group">
+      <label class="control-label col-xs-3" for="id">Id</label>
+      <div class="col-xs-7">
+        <input id="id" name="id" class="form-control" type="text" readonly
+               {{#if id}}value="{{id}}"{{/if}}>
+      </div>
+    </div>
+    {{/if}}
+
+    <div class="form-group">
+      <label class="control-label col-xs-3" for="title">Title</label>
+      <div class="col-xs-7">
+        <input id="title" name="title" class="form-control" type="text"
+               {{#if title}}value="{{title}}"
+               {{else}}placeholder="Title"{{/if}}>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-xs-3" for="content">Content</label>
+      <div class="col-xs-7">
+        <textarea id="content" class="form-control" rows=5 cols=70 required
+                  {{#unless content}}placeholder="Content"{{/unless}}>{{content}}</textarea>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-xs-3" for="sectionId">Section Id</label>
+      <div class="col-xs-4">
+        <select class="form-control" id ="sectionId">
+          <option value="" {{#unless sectionId}}selected{{/unless}}>[none]</option>
+          {{#each sections}}
+          <option value="{{id}}" {{#if current}}selected{{/if}}>{{name}}</option>
+          {{/each}}
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-xs-3" for="authorId">Author Id</label>
+      <div class="col-xs-4">
+        <select class="form-control" id ="authorId">
+          {{#each authors}}
+          <option value="{{id}}" {{#if current}}selected{{/if}}>{{name}}</option>
+          {{/each}}
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-xs-offset-3 col-xs-5">
+        {{#if id}}
+        <button class="btn btn-default" type="submit">Update</button>
+        <span class="half-tab"></span>
+        <button class="btn btn-default" type="button" onclick="cmsAdmin.getArticleDeleteTemplate('{{id}}')">Delete</button>
+        {{else}}
+        <button class="btn btn-default" type="submit">Create</button>
+        {{/if}}
+        <span class="half-tab"></span>
+        <button class="btn btn-default" type="button" onclick="cmsAdmin.getArticleTemplate()">Cancel</button>
+      </div>
+    </div>
+  </form>
+</div>
+</script>
+
+<script id="file-template" type="text/x-handlebars-template">
+<div>
+  <h3>All files</h3>
+  <h4><a href="javascript:void(0)" onclick="cmsAdmin.getFileCreateTemplate()">Create new</a></h4>
+  <table id="file-table" class="table table-striped">
+    <thead>
+      <tr>
+        <th>id</th>
+        <th>filename</th>
+        <th>article</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each files}}
+      <tr>
+        <td>{{id}}</td>
+        <td>{{filename}}</td>
+        <td>{{#if articleTitle}}{{articleTitle}} ({{articleId}}){{else}}[none]{{/if}}</td>
+        <td><a class="download" href="{{id}}" target="_blank">download</a></td>
+        <td><a href="javascript:void(0)" onclick="cmsAdmin.getFileUpdateTemplate(0, {{id}})">edit/remove</a></td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+</script>
+
+<script id="file-update-template" type="text/x-handlebars-template">
+<div>
+  <h3>{{#if id}}Update{{else}}Create{{/if}} File</h3>
+  <form id="file-form" class="form-horizontal" action="#">
+    {{#if id}}
+    <div class="form-group">
+      <label class="control-label col-xs-3" for="id">Id</label>
+      <div class="col-xs-7">
+        <input id="id" name="id" class="form-control" type="text" readonly
+               {{#if id}}value="{{id}}"{{/if}}>
+      </div>
+    </div>
+    {{/if}}
+
+    <div class="form-group">
+      <label class="control-label col-xs-3" for="title">Filename</label>
+      <div class="col-xs-7">
+        <input id="filename" name="filename" class="form-control" type="text"
+               {{#if filename}}value="{{filename}}" readonly
+               {{else}}placeholder="Filename"{{/if}}>
+      </div>
+    </div>
+    
+    {{#unless id}}
+    <div class="form-group">
+      <label class="control-label col-xs-3" for="file">File</label>
+      <div class="col-xs-7">
+        <input id="file" name="file" class="form-control" type="file">
+      </div>
+    </div>
+    {{/unless}}
+
+    <div class="form-group">
+      <label class="control-label col-xs-3" for="articleId">Article Id</label>
+      <div class="col-xs-4">
+        <select class="form-control" id ="articleId">
+          <option value="" {{#unless articleId}}selected{{/unless}}>[none]</option>
+          {{#each articles}}
+          <option value="{{id}}" {{#if current}}selected{{/if}}>{{name}}</option>
+          {{/each}}
+        </select>
+      </div>
+    </div>
+    
+    {{#if id}}
+    <div class="form-group">
+      <label class="control-label col-xs-3">Download</label>
+      <div class="col-xs-4">
+        <a class="download" href="{{id}}" target="_blank">{{filename}}</a>
+      </div>
+    </div>
+    {{/if}}
+
+    <div class="form-group">
+      <div class="col-xs-offset-3 col-xs-5">
+        {{#if id}}
+        <button class="btn btn-default" type="submit">Update</button>
+        <span class="half-tab"></span>
+        <button class="btn btn-default" type="button" onclick="cmsAdmin.getFileDeleteTemplate('{{id}}')">Delete</button>
+        {{else}}
+        <button class="btn btn-default" type="submit">Create</button>
+        {{/if}}
+        <span class="half-tab"></span>
+        <button class="btn btn-default" type="button" onclick="cmsAdmin.getFileTemplate()">Cancel</button>
+      </div>
+    </div>
+  </form>
+</div>
+</script>
+
+<script id="archive-template" type="text/x-handlebars-template">
+<div>
+  <h3>All archives</h3>
+  <p>Note: Archives are managed automatically by Articles</p>
+  <table id="archive-table" class="table table-striped">
+    <thead>
+      <tr>
+        <th>id</th>
+        <th>month</th>
+        <th>year</th>
+        <th>article</th>   
+      </tr>
+    </thead>
+    <tbody>
+      {{#each archives}}
+      <tr>
+        <td>{{id}}</td>
+        <td>{{month}}</td>
+        <td>{{year}}</td>
+        <td>{{#if article}}{{article.title}} ({{article.id}}){{else}}[none]{{/if}}</td>
+        <td><a href="javascript:void(0)" onclick="cmsAdmin.getArticleUpdateTemplate(0, {{article.id}})">
+              edit/remove</a></td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+</script>
+
+
+</div>
+</body>
+</html>

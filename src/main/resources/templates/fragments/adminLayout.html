@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="fragments/layout :: head(title='Admin')"></head>
+  <body>
+  
+    <nav th:fragment="navbar" class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="main.html" th:href="@{'/'}" th:text="${siteName}">Site Name</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul id="sub-nav" class="nav navbar-nav">
+            <li id="author-nav"><a href="#">Authors</a></li>
+            <li id="section-nav"><a href="#">Sections</a></li>
+            <li id="article-nav"><a href="#">Articles</a></li>
+            <li id="file-nav"><a href="#">Files</a></li>
+            <li id="archive-nav"><a href="#">Archives</a></li>
+            <li id="feature-nav"><a href="#">Features</a></li>
+            <li id="tag-nav"><a href="#">Tags</a></li>
+            <li id="comment-nav"><a href="#">Comments</a></li>
+            <li id="site-detail-nav"><a href="#">Site Details</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Search</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->       
+      </div>
+    </nav>
+   
+    <div class="container">
+    
+      <div th:replace="fragments/layout :: notify"></div>
+         
+      <div class="row">
+      
+        <div th:fragment="main" class="col-sm-8">
+          <div>
+            <h1 id="page-title">Admin</h1>
+            <div class="content-placeholder">Admin content</div>
+          </div>
+        </div>
+      
+        <div th:fragment="sidebar" class="col-sm-3 col-sm-offset-1 blog-sidebar">
+          <div class="sidebar-placeholder">Sidebar content</div>
+          <div class="metric-placeholder"></div>
+        </div><!-- /.blog-sidebar -->
+        
+      </div><!-- /.row -->
+             
+    </div> <!-- /container -->
+    
+    <div th:replace="fragments/layout :: footer"></div>
+      
+    <div th:replace="fragments/layout :: scripts"></div>
+  </body>
+</html>

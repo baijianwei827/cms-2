@@ -12,6 +12,7 @@
     <title th:text="${title}">Title</title>
 
     <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <link href="../static/css/theme.bootstrap.min.css" th:href="@{/css/theme.bootstrap.min.css}" rel="stylesheet">
     <link href="../static/css/custom.css" th:href="@{/css/custom.css}" rel="stylesheet">
   </head>
 
@@ -31,7 +32,7 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li th:each="section : ${sections}" th:class="${sectionId == section.id} ? 'active'">
-              <a href="articles.html" th:href="@{'/sections/'+${section.id}}" th:text="${section.title}">Section 1</a></li>
+              <a href="articles.html" th:href="@{'/sections/' + ${section.id}}" th:text="${section.title}">Section 1</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li th:class="${sectionId == 'about'} ? 'active'"><a href="about.html" th:href="@{'/about'}">About</a></li>
@@ -43,6 +44,14 @@
     </nav>
 
     <div class="container">
+    
+      <div th:fragment="notify">
+        <div th:if="${message} != null" class="alert alert-success alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+           <p><strong>Success!</strong> <span th:text="${message}">Message here.</span></p>
+        </div>
+      </div>
     
       <div th:fragment="feature" class="jumbotron">
         <h1>Featured Article</h1>
@@ -56,11 +65,11 @@
       <div th:fragment="carousel" th:unless="${#lists.isEmpty(features)}" id="myCarousel" class="carousel slide" data-ride="carousel">
         <ol class="carousel-indicators">
           <li th:each="feature, iStat : ${features}" data-target="#myCarousel"
-            th:attr="data-slide-to=${iStat.index}" th:classappend="${iStat.index==0} ? 'active'"></li>
+            th:attr="data-slide-to=${iStat.index}" th:classappend="${iStat.index == 0} ? 'active'"></li>
         </ol>
         <div class="carousel-inner" role="listbox">
-          <div th:each="feature, iStat : ${features}" class="item" th:classappend="${iStat.index==0} ? 'active'">
-            <img class="first-slide" th:src="@{'/img/'+${feature.cover}}" th:unless="${feature.cover == null}">
+          <div th:each="feature, iStat : ${features}" class="item" th:classappend="${iStat.index == 0} ? 'active'">
+            <img class="first-slide" th:src="@{'/img/' + ${feature.cover}}" th:unless="${feature.cover == null}">
             <div class="container">
               <div class="carousel-caption">
                 <h1 th:text="${feature.article.title}">Feature Title</h1>
@@ -90,7 +99,7 @@
           <div th:if="${#lists.isEmpty(articles)}"><p th:text="'No articles found.'"></p></div>
           <div th:each="article : ${articles}">
             <h4><a href="article.html"
-                   th:href="@{'/articles/'+${article.id}}"
+                   th:href="@{'/articles/' + ${article.id}}"
                    th:text="${article.title}">Article Title</a></h4>
             <p th:text="' by ' + ${article.author.username} + ' | ' + (${article.section != null} ? ${article.section.title} : '(no section)') + ' | ' + ${#temporals.format(article.dateCreated, 'MMM dd, yyyy HH:mm')}">
               by Author | Section 1 | May 21, 2016</p>
@@ -105,6 +114,53 @@
             <p th:text="' by ' + ${article.author.username} + ' | ' + (${article.section != null} ? ${article.section.title} : '(no section)') + ' | ' + ${#temporals.format(article.dateCreated, 'MMM dd, yyyy HH:mm')}">
               by Author | Section 1 | May 21, 2016</p>
             <p th:text="${article.content}">Article content.</p>
+          </div>
+          
+          <div th:unless="${article == null}">
+            <hr>
+            <h3>Comments</h3>
+            <div th:if="${#lists.isEmpty(article.comments)}"><p th:text="'No comments.'"></p></div>
+            <div th:each="comment : ${article.comments}" class="panel" 
+                 th:classappend="(${comment.authorResponse} ? 'panel-primary' : 'panel-default')">
+              <div th:text="'Posted by ' + (${comment.name == null} ? 'Anonymous' : ${comment.name}) + (${comment.authorResponse} ? ' (author) | ' : ' | ') + ${#temporals.format(comment.dateCreated, 'MMM dd, yyyy HH:mm')}"
+                   class="panel-heading">Posted by User | May 23, 2016</div>
+              <div th:text="${comment.content}" class="panel-body">
+                Comment content.
+              </div>
+            </div>
+          </div>
+          
+          <div th:unless="${article == null}">
+            <hr>
+            <h4>Add Comment</h4>
+            <form id="comment-submit-form" class="form-horizontal" method="post" action="#"
+                  th:action="@{'/articles/' + ${article.id} + '/comment'}" th:object="${commentForm}">
+              <div class="form-group">
+                <label class="control-label col-xs-3" for="name">Name</label>
+                <div class="col-xs-7">
+                  <input id="name" class="form-control" placeholder="Name" type="text" th:field="*{name}">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-xs-3" for="email">Email</label>
+                <div class="col-xs-7">
+                  <input id="email" class="form-control" placeholder="Email" type="email" th:field="*{email}">
+                </div>
+              </div>    
+              <div class="form-group">
+                <label class="control-label col-xs-3" for="content">Comment (required)</label>
+                <div class="col-xs-7">
+                  <textarea id="content" class="form-control" rows=5 cols=70 placeholder="Comment..." th:field="*{content}" required></textarea>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-xs-offset-3 col-xs-5">
+                  <button class="btn btn-default" type="submit">Submit</button>
+                  <span class="half-tab"></span>
+                  <button class="btn btn-default" type="button" onclick="$('#comment-submit-form').trigger('reset')">Clear</button>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
         
@@ -122,7 +178,7 @@
             <div th:if="${#lists.isEmpty(recentArticles)}"><p th:text="'No articles found.'"></p></div>
             <div th:each="recentArticle : ${recentArticles}">
               <a href="article.html" 
-                 th:href="@{'/articles/'+${recentArticle.id}}" th:text="${recentArticle.title}">Article Title</a>
+                 th:href="@{'/articles/' + ${recentArticle.id}}" th:text="${recentArticle.title}">Article Title</a>
               <p th:text="${#strings.abbreviate(recentArticle.content, 100)}">Some article content.</p>
             </div>
           </div>
@@ -132,7 +188,7 @@
             <div th:if="${#lists.isEmpty(tags)}"><p th:text="'No tags found.'"></p></div>
             <div th:each="tag : ${tags}">
               <a href="articles.html"
-                 th:href="@{'/tags/'+${tag.id}}"><span class="label label-default" th:text="${tag.title}">tag</span></a>
+                 th:href="@{'/tags/' + ${tag.id}}"><span class="label label-default" th:text="${tag.title}">tag</span></a>
             </div>         
           </div>
           
@@ -142,8 +198,8 @@
             <ol class="list-unstyled">
               <li th:each="archive : ${archives}">
                 <a href="articles.html"
-                   th:href="@{'/archives/'+${archive.year}+'/'+${archive.month}}"
-                   th:text="${archive.getMonthName()}+' '+${archive.year}">May 2016</a></li>
+                   th:href="@{'/archives/' + ${archive.year} + '/' + ${archive.month}}"
+                   th:text="${archive.getMonthName()} + ' ' + ${archive.year}">May 2016</a></li>
             </ol>
           </div>
           
@@ -167,7 +223,11 @@
       
     <div th:fragment="scripts">  
       <script src="../static/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+      <script src="../static/js/jquery.validate.min.js" th:src="@{/js/jquery.validate.min.js}"></script>
+      <script src="../static/js/jquery.tablesorter.js" th:src="@{/js/jquery.tablesorter.js}"></script>
+      <script src="../static/js/jquery.tablesorter.widgets.js" th:src="@{/js/jquery.tablesorter.widgets.js}"></script>
       <script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+      <script src="../static/js/custom.js" th:src="@{/js/custom.js}"></script>
     </div><!-- /scripts fragment -->
   </body>
 </html>

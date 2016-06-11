@@ -1,23 +1,30 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-  <head th:replace="layout :: head(title='Article')"></head>
+  <head th:replace="fragments/layout :: head"></head>
   <body>
-    <div th:replace="layout :: navbar"></div>
+    <div th:replace="fragments/adminLayout :: navbar"></div>
    
     <div class="container">
+      <div th:replace="fragments/layout :: notify"></div>
+      <div class="js-msg-placeholder"></div>
          
       <div class="row">
       
-        <div th:replace="layout :: articleDetail"></div>
-      
-        <div th:replace="layout :: sidebar"></div>
+        <div th:replace="fragments/adminLayout :: main"></div>
+             
+        <div th:replace="fragments/adminLayout :: sidebar"></div>
         
       </div><!-- /.row -->
              
     </div> <!-- /container -->
     
-    <div th:replace="layout :: footer"></div>
+    <div th:replace="fragments/handlebars :: templates"></div>
+    
+    <div th:replace="fragments/layout :: footer"></div>
       
-    <div th:replace="layout :: scripts"></div>
+    <div th:replace="fragments/layout :: scripts"></div>
+    
+    <script src="../static/js/handlebars.min.js" th:src="@{/js/handlebars.min.js}"></script>
+    <script src="../static/js/admin.js" th:src="@{/js/admin.js}"></script>
   </body>
 </html>
