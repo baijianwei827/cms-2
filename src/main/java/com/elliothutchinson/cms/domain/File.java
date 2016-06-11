@@ -11,54 +11,59 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 public class File {
-	
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private long id;
-	
-	@NotNull
-	@Column(unique=true)
-	private String filename;
-	
-	@ManyToOne
-	@JoinColumn(name="article_id")
-	private Article article;
-	
-	protected File() {}
-	
-	public File(String filename, Article article) {
-		this.filename = filename;
-		this.article = article;
-	}
 
-	public long getId() {
-		return id;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    @NotNull
+    @Column(unique = true)
+    private String filename;
 
-	public String getFilename() {
-		return filename;
-	}
+    @ManyToOne
+    @JoinColumn(name = "article_id")
+    private Article article;
 
-	public void setFilename(String filename) {
-		this.filename = filename;
-	}
+    private static final String ROOT = "src/main/resources/media/";
 
-	public Article getArticle() {
-		return article;
-	}
+    protected File() {
+    }
 
-	public void setArticle(Article article) {
-		this.article = article;
-	}
-	
-	@Override
-	public String toString() {
-		return String.format(
-				"File[id=%d, filename='%s']",
-				id, filename);
-	}
+    public File(String filename, Article article) {
+        this.filename = filename;
+        this.article = article;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public Article getArticle() {
+        return article;
+    }
+
+    public void setArticle(Article article) {
+        this.article = article;
+    }
+
+    public static String getRoot() {
+        return ROOT;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("File[id=%d, filename='%s']", id, filename);
+    }
 }

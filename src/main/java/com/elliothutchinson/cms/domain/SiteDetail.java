@@ -17,80 +17,81 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 public class SiteDetail {
-	
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private long id;
-	
-	@NotNull
-	@JoinColumn(unique=true)
-	private String name;
-	
-	private String title;
-	
-	@NotNull
-	@Column(length=10000)
-	private String content;
-	
-	private String filename;
-	
-	@CreatedDate
-	private LocalDateTime dateCreated;
-	
-	protected SiteDetail() {}
-	
-	public SiteDetail(String name, String title, String content, String cover) {
-		this.name = name;
-		this.title = title;
-		this.content = content;
-		this.filename = cover;
-	}
 
-	public long getId() {
-		return id;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    @NotNull
+    @JoinColumn(unique = true)
+    private String name;
 
-	public String getName() {
-		return name;
-	}
+    private String title;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    @NotNull
+    @Column(length = 10000)
+    private String content;
 
-	public String getTitle() {
-		return title;
-	}
+    private String filename;
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    @CreatedDate
+    private LocalDateTime dateCreated;
 
-	public String getContent() {
-		return content;
-	}
+    protected SiteDetail() {
+    }
 
-	public void setContent(String content) {
-		this.content = content;
-	}
+    public SiteDetail(String name, String title, String content, String cover) {
+        this.name = name;
+        this.title = title;
+        this.content = content;
+        this.filename = cover;
+    }
 
-	public String getFilename() {
-		return filename;
-	}
+    public long getId() {
+        return id;
+    }
 
-	public void setFilename(String filename) {
-		this.filename = filename;
-	}
-	
-	public LocalDateTime getDateCreated() {
-		return dateCreated;
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	public void setDateCreated(LocalDateTime dateCreated) {
-		this.dateCreated = dateCreated;
-	}
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public LocalDateTime getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(LocalDateTime dateCreated) {
+        this.dateCreated = dateCreated;
+    }
 }

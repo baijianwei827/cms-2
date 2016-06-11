@@ -12,87 +12,93 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Email;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Author {
-	
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private long id;
-	
-	@NotNull
-	@Column(unique=true)
-	private String username;
-	
-	@NotNull
-	private String password;
-	
-	private String email;
-	private boolean admin;
-	
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="author", cascade=CascadeType.REMOVE)
-	private List<Article> articles;
-	
-	protected Author() {}
-	
-	public Author(String username, String password, String email, boolean admin) {
-		this.username = username;
-		this.password = password;
-		this.email = email;
-		this.admin = admin;
-	}
 
-	public long getId() {
-		return id;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    @NotNull
+    @Column(unique = true)
+    private String username;
 
-	public String getUsername() {
-		return username;
-	}
+    @NotNull
+    private String password;
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    @Email
+    private String email;
 
-	public String getPassword() {
-		return password;
-	}
+    private boolean admin;
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "author", cascade = CascadeType.REMOVE)
+    private List<Article> articles;
 
-	public String getEmail() {
-		return email;
-	}
+    protected Author() {
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public Author(String username, String password, String email, boolean admin) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.admin = admin;
+    }
 
-	public boolean isAdmin() {
-		return admin;
-	}
+    public long getId() {
+        return id;
+    }
 
-	public void setAdmin(boolean admin) {
-		this.admin = admin;
-	}
-	
-	public List<Article> getArticles() {
-		return articles;
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	public void setArticles(List<Article> articles) {
-		this.articles = articles;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	@Override
-	public String toString() {
-		return String.format(
-				"Author[id=%d, username='%s', email='%s', admin='%s']",
-				id, username, email, admin);
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
+
+    @JsonIgnore
+    public List<Article> getArticles() {
+        return articles;
+    }
+
+    public void setArticles(List<Article> articles) {
+        this.articles = articles;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Author[id=%d, username='%s', email='%s', admin='%s']", id, username, email, admin);
+    }
 }

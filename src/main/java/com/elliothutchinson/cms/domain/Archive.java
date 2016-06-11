@@ -13,59 +13,60 @@ import javax.persistence.OneToOne;
 
 @Entity
 public class Archive {
-	
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private long id;
-	
-	private int month;
-	private int year;
-	
-	@OneToOne
-	@JoinColumn(name="article_id", unique=true, nullable=false)
-	private Article article;
-	
-	protected Archive() {}
-	
-	public Archive(int month, int year, Article article) {
-		this.month = month;
-		this.year = year;
-		this.article = article;
-	}
 
-	public long getId() {
-		return id;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    private int month;
+    private int year;
 
-	public int getMonth() {
-		return month;
-	}
+    @OneToOne
+    @JoinColumn(name = "article_id", unique = true, nullable = false)
+    private Article article;
 
-	public void setMonth(int month) {
-		this.month = month;
-	}
+    protected Archive() {
+    }
 
-	public int getYear() {
-		return year;
-	}
+    public Archive(int month, int year, Article article) {
+        this.month = month;
+        this.year = year;
+        this.article = article;
+    }
 
-	public void setYear(int year) {
-		this.year = year;
-	}
+    public long getId() {
+        return id;
+    }
 
-	public Article getArticle() {
-		return article;
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	public void setArticle(Article article) {
-		this.article = article;
-	}
-	
-	public String getMonthName() {
-		return Month.of(month).getDisplayName(TextStyle.FULL, Locale.US);
-	}
+    public int getMonth() {
+        return month;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public Article getArticle() {
+        return article;
+    }
+
+    public void setArticle(Article article) {
+        this.article = article;
+    }
+
+    public String getMonthName() {
+        return Month.of(month).getDisplayName(TextStyle.FULL, Locale.US);
+    }
 }

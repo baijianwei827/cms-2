@@ -26,183 +26,191 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 public class Article {
-	
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private long id;
-	
-	@NotNull
-	private String title;
-	
-	@Column(length=10000)
-	private String content;
-	
-	@CreatedDate
-	private LocalDateTime dateCreated;
-	
-	@LastModifiedDate
-	private LocalDateTime dateModified;
-	
-	@ManyToOne
-	@JoinColumn(name="author_id")
-	private Author author;
-	
-	@ManyToOne
-	@JoinColumn(name="section_id")
-	private Section section;
-	
-	@OneToOne(mappedBy="article", cascade=CascadeType.ALL)
-	private Archive archive;
-	
-	@OneToOne(mappedBy="article", cascade=CascadeType.ALL)
-	private Feature feature;
-	
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="article", cascade=CascadeType.REMOVE)
-	private List<Comment> comments;
-	
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="article", cascade=CascadeType.REMOVE)
-	private List<File> files;
-	
-	@ManyToMany(fetch=FetchType.LAZY, cascade=CascadeType.MERGE)
-	@JoinTable(name="article_tag",
-			joinColumns=@JoinColumn(name="article_id"),
-			inverseJoinColumns=@JoinColumn(name="tag_id"),
-			uniqueConstraints=@UniqueConstraint(columnNames={"article_id", "tag_id"}))
-	private List<Tag> tags = new ArrayList<>();
-	
-	protected Article() {}
-	
-	public Article(String title, String content, Author author, Section section) {
-		this.title = title;
-		this.content = content;
-		this.author = author;
-		this.section = section;
-	}
-	
-	public long getId() {
-		return id;
-	}
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-	public String getTitle() {
-		return title;
-	}
+    @NotNull
+    private String title;
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    @NotNull
+    @Column(length = 10000)
+    private String content;
 
-	public String getContent() {
-		return content;
-	}
+    @CreatedDate
+    private LocalDateTime dateCreated;
 
-	public void setContent(String content) {
-		this.content = content;
-	}
-	
-	public LocalDateTime getDateCreated() {
-		return dateCreated;
-	}
+    @LastModifiedDate
+    private LocalDateTime dateModified;
 
-	public void setDateCreated(LocalDateTime dateCreated) {
-		this.dateCreated = dateCreated;
-	}
-	
-	public LocalDateTime getDateModified() {
-		return dateModified;
-	}
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private Author author;
 
-	public void setDateModified(LocalDateTime dateModified) {
-		this.dateModified = dateModified;
-	}
+    @ManyToOne
+    @JoinColumn(name = "section_id")
+    private Section section;
 
-	public Author getAuthor() {
-		return author;
-	}
+    @OneToOne(mappedBy = "article", cascade = CascadeType.ALL)
+    private Archive archive;
 
-	public void setAuthor(Author author) {
-		this.author = author;
-	}
+    @OneToOne(mappedBy = "article", cascade = CascadeType.ALL)
+    private Feature feature;
 
-	public Section getSection() {
-		return section;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "article", cascade = CascadeType.REMOVE)
+    private List<Comment> comments;
 
-	public void setSection(Section section) {
-		this.section = section;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "article", cascade = CascadeType.REMOVE)
+    private List<File> files;
 
-	public Archive getArchive() {
-		return archive;
-	}
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinTable(name = "article_tag", joinColumns = @JoinColumn(name = "article_id"), 
+            inverseJoinColumns = @JoinColumn(name = "tag_id"), uniqueConstraints = @UniqueConstraint(columnNames = {
+            "article_id", "tag_id" }))
+    private List<Tag> tags = new ArrayList<>();
 
-	public void setArchive(Archive archive) {
-		this.archive = archive;
-	}
+    protected Article() {
+    }
 
-	public Feature getFeature() {
-		return feature;
-	}
+    public Article(String title, String content, Author author, Section section) {
+        this.title = title;
+        this.content = content;
+        this.author = author;
+        this.section = section;
+    }
 
-	public void setFeature(Feature feature) {
-		this.feature = feature;
-	}
+    public long getId() {
+        return id;
+    }
 
-	public List<Comment> getComments() {
-		return comments;
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	public void setComments(List<Comment> comments) {
-		this.comments = comments;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public List<File> getFiles() {
-		return files;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public void setFiles(List<File> files) {
-		this.files = files;
-	}
+    public String getContent() {
+        return content;
+    }
 
-	public List<Tag> getTags() {
-		return tags;
-	}
+    public void setContent(String content) {
+        this.content = content;
+    }
 
-	public void setTags(List<Tag> tags) {
-		this.tags = tags;
-	}
-	
-	public void addTag(Tag tag) {
-		tag.getArticles().add(this);
-		getTags().add(tag);
-	}
-	
-	public void removeTag(Tag tag) {
-		tag.getArticles().remove(this);
-		getTags().remove(tag);
-	}
-	
-	public void removeTags() {
-		for (Tag t : new ArrayList<>(tags)) {
-			removeTag(t);
-		}
-	}
+    public LocalDateTime getDateCreated() {
+        return dateCreated;
+    }
 
-	@Override
-	public String toString() {
-		return String.format(
-				"Article[id=%d, title='%s', dateCreated='%s', dateModifed='%s']",
-				id, title, dateCreated, dateModified);
-	}
-	
-	@PostPersist
-	public void createArchiveEntry() {
-		archive = new Archive(dateCreated.getMonthValue(), dateCreated.getYear(), this);
-	}
+    public void setDateCreated(LocalDateTime dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public LocalDateTime getDateModified() {
+        return dateModified;
+    }
+
+    public void setDateModified(LocalDateTime dateModified) {
+        this.dateModified = dateModified;
+    }
+
+    public Author getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Author author) {
+        this.author = author;
+    }
+
+    public Section getSection() {
+        return section;
+    }
+
+    public void setSection(Section section) {
+        this.section = section;
+    }
+
+    @JsonIgnore
+    public Archive getArchive() {
+        return archive;
+    }
+
+    public void setArchive(Archive archive) {
+        this.archive = archive;
+    }
+
+    @JsonIgnore
+    public Feature getFeature() {
+        return feature;
+    }
+
+    public void setFeature(Feature feature) {
+        this.feature = feature;
+    }
+
+    @JsonIgnore
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    @JsonIgnore
+    public List<File> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<File> files) {
+        this.files = files;
+    }
+
+    @JsonIgnore
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public void addTag(Tag tag) {
+        tag.getArticles().add(this);
+        getTags().add(tag);
+    }
+
+    public void removeTag(Tag tag) {
+        tag.getArticles().remove(this);
+        getTags().remove(tag);
+    }
+
+    public void removeTags() {
+        for (Tag t : new ArrayList<>(tags)) {
+            removeTag(t);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Article[id=%d, title='%s', dateCreated='%s', dateModifed='%s']", id, title, dateCreated,
+                dateModified);
+    }
+
+    @PostPersist
+    public void createArchiveEntry() {
+        archive = new Archive(dateCreated.getMonthValue(), dateCreated.getYear(), this);
+    }
 }
