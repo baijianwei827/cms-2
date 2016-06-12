@@ -17,3 +17,5 @@ node_modules
 *.swo
 
 static
+
+custom.min.js

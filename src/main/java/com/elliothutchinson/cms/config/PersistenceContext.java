@@ -9,11 +9,11 @@ import com.elliothutchinson.cms.service.AuditingDateTimeProvider;
 import com.elliothutchinson.cms.service.DateTimeService;
 
 @Configuration
-@EnableJpaAuditing(dateTimeProviderRef="dateTimeProvider")
+@EnableJpaAuditing(dateTimeProviderRef = "dateTimeProvider")
 public class PersistenceContext {
-	
-	@Bean
-	DateTimeProvider dateTimeProvider(DateTimeService dateTimeService) {
-		return new AuditingDateTimeProvider(dateTimeService);
-	}
+
+    @Bean
+    DateTimeProvider dateTimeProvider(DateTimeService dateTimeService) {
+        return new AuditingDateTimeProvider(dateTimeService);
+    }
 }
