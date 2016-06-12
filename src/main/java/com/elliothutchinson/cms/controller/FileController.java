@@ -16,8 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.elliothutchinson.cms.dto.AuthEntity;
 import com.elliothutchinson.cms.dto.FileDto;
 import com.elliothutchinson.cms.service.AuthenticationService;
-import com.elliothutchinson.cms.service.RestFileService;
-
+import com.elliothutchinson.cms.service.rest.RestFileService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 @RestController

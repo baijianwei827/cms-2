@@ -1,4 +1,4 @@
-package com.elliothutchinson.cms.service;
+package com.elliothutchinson.cms.service.rest;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -15,8 +15,8 @@ import com.elliothutchinson.cms.repository.CommentRepository;
 import com.elliothutchinson.cms.repository.FileRepository;
 import com.elliothutchinson.cms.repository.SectionRepository;
 import com.elliothutchinson.cms.repository.TagRepository;
-import com.elliothutchinson.cms.service.CurrentTimeDateTimeService;
-import com.elliothutchinson.cms.service.DateTimeService;
+import com.elliothutchinson.cms.service.date.CurrentTimeDateTimeService;
+import com.elliothutchinson.cms.service.date.DateTimeService;
 
 @SpringBootApplication
 public class CmsApplication {

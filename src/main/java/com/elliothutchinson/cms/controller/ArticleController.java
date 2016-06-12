@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.elliothutchinson.cms.dto.ArticleDto;
 import com.elliothutchinson.cms.dto.AuthEntity;
 import com.elliothutchinson.cms.service.AuthenticationService;
-import com.elliothutchinson.cms.service.RestArticleService;
-
+import com.elliothutchinson.cms.service.rest.RestArticleService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 @RestController

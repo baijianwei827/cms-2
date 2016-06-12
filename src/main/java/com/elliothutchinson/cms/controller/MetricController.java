@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.elliothutchinson.cms.service.AuthenticationService;
-import com.elliothutchinson.cms.service.RestMetricService;
-
+import com.elliothutchinson.cms.service.rest.RestMetricService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 @RestController

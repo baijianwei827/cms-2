@@ -1,4 +1,4 @@
-package com.elliothutchinson.cms.service;
+package com.elliothutchinson.cms.service.rest;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,7 +21,7 @@ import com.elliothutchinson.cms.dto.FileDto;
 import com.elliothutchinson.cms.dto.ForeignEntity;
 import com.elliothutchinson.cms.repository.ArticleRepository;
 import com.elliothutchinson.cms.repository.FileRepository;
-
+import com.elliothutchinson.cms.service.ResourceService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;

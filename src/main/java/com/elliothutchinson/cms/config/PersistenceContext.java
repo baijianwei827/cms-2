@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-import com.elliothutchinson.cms.service.AuditingDateTimeProvider;
-import com.elliothutchinson.cms.service.DateTimeService;
+import com.elliothutchinson.cms.service.date.AuditingDateTimeProvider;
+import com.elliothutchinson.cms.service.date.DateTimeService;
 
 @Configuration
 @EnableJpaAuditing(dateTimeProviderRef = "dateTimeProvider")

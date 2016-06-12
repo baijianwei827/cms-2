@@ -1,4 +1,4 @@
-package com.elliothutchinson.cms.service;
+package com.elliothutchinson.cms.service.rest;
 
 import java.util.ArrayList;
 import java.util.List;

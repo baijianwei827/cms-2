@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.elliothutchinson.cms.dto.AuthEntity;
 import com.elliothutchinson.cms.dto.CommentDto;
 import com.elliothutchinson.cms.service.AuthenticationService;
-import com.elliothutchinson.cms.service.RestCommentService;
-
+import com.elliothutchinson.cms.service.rest.RestCommentService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 @RestController
