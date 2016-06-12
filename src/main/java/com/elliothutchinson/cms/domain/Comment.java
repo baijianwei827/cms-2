@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Email;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -24,7 +25,10 @@ public class Comment {
     private long id;
 
     private String name;
+    
+    @Email
     private String email;
+    
     private boolean authorResponse;
 
     @NotNull
@@ -34,6 +38,7 @@ public class Comment {
     @CreatedDate
     private LocalDateTime dateCreated;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "article_id")
     private Article article;

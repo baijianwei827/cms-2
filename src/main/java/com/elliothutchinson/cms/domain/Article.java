@@ -126,6 +126,7 @@ public class Article {
         this.dateModified = dateModified;
     }
 
+    @JsonIgnore
     public Author getAuthor() {
         return author;
     }

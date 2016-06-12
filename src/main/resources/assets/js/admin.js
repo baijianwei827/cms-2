@@ -27,6 +27,10 @@ var cmsAdmin = (function() {
     $("#archive-nav").click(function() {
         cmsAdmin.getArchiveTemplate();
     });
+    
+    $("#comment-nav").click(function() {
+        cmsAdmin.getCommentTemplate();
+    });
 
     var getLoginTemplate = function(t) {
         getTemplate(t, "Admin Login", "#login-template");
@@ -321,6 +325,73 @@ var cmsAdmin = (function() {
                     $('[data-toggle="tooltip"]').tooltip();
                 });
     };
+    
+    var getCommentTemplate = function(t) {
+        if (verifyLoggedIn() === false) {
+            return;
+        }
+        custom.updateActive("#comment-nav", "#sub-nav li");
+        getTemplate(t, "Comments", "#comment-template", ".content-placeholder", undefined,
+                "/api/v1/comments", remoteJson, function() {
+                    $("#comment-table").tablesorter({
+                        theme : 'bootstrap',
+                        headerTemplate : '{content} {icon}',
+                        widgets : [ "uitheme" ],
+                        sortList : [ 0, 0 ]
+                    });
+                    getMetricTemplate("/api/v1/metrics", "#metric-template");
+                    $('[data-toggle="tooltip"]').tooltip();
+                });
+    };
+    
+    var getCommentCreateTemplate = function(t) {
+        custom.updateActive("#comment-nav", "#sub-nav li");
+        getTemplate(t, "Comments", "#comment-update-template", ".content-placeholder", undefined,
+                "/api/v1/comments/-1", remoteJson, function() {
+                    $("#comment-form").validate({
+                        rules : {
+                            email : {
+                                required : false,
+                                email : true
+                            },
+                            content : "required",
+                        },
+                        submitHandler : function() {
+                            sendFormData("/api/v1/comments", "POST", getFormData("#comment-form"), function(data) {
+                                getMsgTemplate("#success-template", "Comment was created");
+                                getCommentTemplate(5000);
+                            });
+                        }
+                    });
+                });
+    };
+    
+    var getCommentUpdateTemplate = function(t, path) {
+        custom.updateActive("#comment-nav", "#sub-nav li");
+        getTemplate(t, "Comments", "#comment-update-template", ".content-placeholder", undefined,
+                "/api/v1/comments/" + path, remoteJson, function() {
+                    $("#comment-form").validate({
+                        rules : {
+                            email : {
+                                required : false,
+                                email : true
+                            },
+                            content : "required",
+                        },
+                        submitHandler : function() {
+                            sendFormData("/api/v1/comments/" + path, "PUT", getFormData("#comment-form"),
+                                    function(data) {
+                                        getMsgTemplate("#success-template", "Comment was updated");
+                                        getCommentTemplate(5000);
+                                    });
+                        }
+                    });
+                });
+    };
+    
+    var getCommentDeleteTemplate = function(path) {
+        deleteResource('comments/' + path, getCommentTemplate);
+    };
 
     var getTemplate = function(t, pageTitle, templateId, target, context, url, func, cb) {
         clearMsg(t);
@@ -439,6 +510,7 @@ var cmsAdmin = (function() {
             dataType : "json"
         })
         .done(function(data) {
+            console.log(data);
             checkResult(data, cb);
         })
         .fail(function(e) {
@@ -459,10 +531,11 @@ var cmsAdmin = (function() {
             contentType : false,
             processData : false,
             cache : false,
-            data : formData
-            // dataType: "json"
+            data : formData,
+            dataType: "json"
         })
         .done(function(data) {
+            console.log(data);
             checkResult(data, cb);
         })
         .fail(function(e) {
@@ -531,6 +604,10 @@ var cmsAdmin = (function() {
         getFileUpdateTemplate : getFileUpdateTemplate,
         getFileDeleteTemplate : getFileDeleteTemplate,
         getArchiveTemplate : getArchiveTemplate,
+        getCommentTemplate : getCommentTemplate,
+        getCommentCreateTemplate : getCommentCreateTemplate,
+        getCommentUpdateTemplate : getCommentUpdateTemplate,
+        getCommentDeleteTemplate : getCommentDeleteTemplate,
         getTemplate : getTemplate,
         getSidebarTemplate : getSidebarTemplate,
         getMetricTemplate : getMetricTemplate,
