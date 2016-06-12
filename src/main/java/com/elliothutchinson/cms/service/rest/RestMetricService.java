@@ -101,4 +101,14 @@ public class RestMetricService {
 
         return mapper.writeValueAsString(map);
     }
+    
+    public String findTagMetricsById(Long id) throws JsonProcessingException {
+        Map<String, String> map = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+
+        map.put("title", "Tag Metrics");
+        map.put("articles", String.valueOf(tagRepository.findOne(id).getArticles().size()));
+
+        return mapper.writeValueAsString(map);
+    }
 }

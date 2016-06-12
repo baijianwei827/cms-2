@@ -1,6 +1,6 @@
-var custom = (function() {
+var custom = (function () {
 
-    var updateActive = function(setId, removeId) {
+    var updateActive = function (setId, removeId) {
         $(removeId).removeClass("active");
         $(setId).addClass("active");
     };

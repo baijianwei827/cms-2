@@ -53,4 +53,12 @@ public class MetricController extends AbstractRestController {
 
         return restMetricService.findArticleMetricsById(id);
     }
+    
+    @RequestMapping(value = "/tags/{id}", method = RequestMethod.GET)
+    public String getTagMetrics(@PathVariable Long id, @RequestParam("auth") String auth)
+            throws JsonProcessingException {
+        authenticationService.verifyAuthentication(auth);
+
+        return restMetricService.findTagMetricsById(id);
+    }
 }

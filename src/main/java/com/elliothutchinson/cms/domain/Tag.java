@@ -13,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Tag {
 
@@ -50,6 +52,7 @@ public class Tag {
         this.title = title;
     }
 
+    @JsonIgnore
     public List<Article> getArticles() {
         return articles;
     }

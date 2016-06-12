@@ -1,46 +1,50 @@
-var cmsAdmin = (function() {
+var cmsAdmin = (function () {
 
     var token = 1337;
     var currentUser;
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         cmsAdmin.getLoginTemplate();
         cmsAdmin.getSidebarTemplate();
     });
 
-    $("#author-nav").click(function() {
+    $("#author-nav").click(function () {
         cmsAdmin.getAuthorTemplate();
     });
 
-    $("#section-nav").click(function() {
+    $("#section-nav").click(function () {
         cmsAdmin.getSectionTemplate();
     });
 
-    $("#article-nav").click(function() {
+    $("#article-nav").click(function () {
         cmsAdmin.getArticleTemplate();
     });
 
-    $("#file-nav").click(function() {
+    $("#file-nav").click(function () {
         cmsAdmin.getFileTemplate();
     });
     
-    $("#archive-nav").click(function() {
+    $("#archive-nav").click(function () {
         cmsAdmin.getArchiveTemplate();
     });
     
-    $("#comment-nav").click(function() {
+    $("#tag-nav").click(function () {
+        cmsAdmin.getTagTemplate();
+    });
+    
+    $("#comment-nav").click(function () {
         cmsAdmin.getCommentTemplate();
     });
 
-    var getLoginTemplate = function(t) {
+    var getLoginTemplate = function (t) {
         getTemplate(t, "Admin Login", "#login-template");
         $("#login-form").validate({
             rules : {
                 username : "required",
                 password : "required"
             },
-            submitHandler : function() {
-                sendFormData("/auth", "POST", authenticate("#login-form"), function(data) {
+            submitHandler : function () {
+                sendFormData("/auth", "POST", getFormData("#login-form"), function (data) {
                     setToken(data.token);
                     setCurrentUser(data.username);
                     getSidebarTemplate();
@@ -50,13 +54,13 @@ var cmsAdmin = (function() {
         });
     };
 
-    var getAuthorTemplate = function(t) {
+    var getAuthorTemplate = function (t) {
         if (verifyLoggedIn() === false) {
             return;
         }
         custom.updateActive("#author-nav", "#sub-nav li");
         getTemplate(t, "Authors", "#author-template", ".content-placeholder", undefined, 
-                "/api/v1/authors", remoteJson, function() {
+                "/api/v1/authors", remoteJson, function () {
                     $("#author-table").tablesorter({
                         theme : 'bootstrap',
                         headerTemplate : '{content} {icon}',
@@ -67,7 +71,7 @@ var cmsAdmin = (function() {
                 });
     };
 
-    var getAuthorCreateTemplate = function(t) {
+    var getAuthorCreateTemplate = function (t) {
         custom.updateActive("#author-nav", "#sub-nav li");
         getTemplate(t, "Authors", "#author-update-template");
         $("#author-form").validate({
@@ -83,8 +87,8 @@ var cmsAdmin = (function() {
                     equalTo : "#password"
                 }
             },
-            submitHandler : function() {
-                sendFormData("/api/v1/authors", "POST", getFormData("#author-form"), function(data) {
+            submitHandler : function () {
+                sendFormData("/api/v1/authors", "POST", addAuthEntity("#author-form"), function (data) {
                     getMsgTemplate("#success-template", "Author was created");
                     getAuthorTemplate(5000);
                 });
@@ -92,11 +96,11 @@ var cmsAdmin = (function() {
         });
     };
 
-    var getAuthorUpdateTemplate = function(t, path) {
+    var getAuthorUpdateTemplate = function (t, path) {
         custom.updateActive("#author-nav", "#sub-nav li");
         getMetricTemplate("/api/v1/metrics/authors/" + path, "#metric-template");
         getTemplate(t, "Authors", "#author-update-template", ".content-placeholder", undefined,
-                "/api/v1/authors/" + path, remoteJson, function() {
+                "/api/v1/authors/" + path, remoteJson, function () {
                     $("#author-form").validate({
                         rules : {
                             username : "required",
@@ -110,9 +114,9 @@ var cmsAdmin = (function() {
                                 equalTo : "#password"
                             }
                         },
-                        submitHandler : function() {
-                            sendFormData("/api/v1/authors/" + path, "PUT", getFormData("#author-form"), 
-                                    function(data) {
+                        submitHandler : function () {
+                            sendFormData("/api/v1/authors/" + path, "PUT", addAuthEntity("#author-form"), 
+                                    function (data) {
                                         getMsgTemplate("#success-template", "Author was updated");
                                         getAuthorTemplate(5000);
                                     });
@@ -121,17 +125,17 @@ var cmsAdmin = (function() {
                 });
     };
 
-    var getAuthorDeleteTemplate = function(path) {
+    var getAuthorDeleteTemplate = function (path) {
         deleteResource('authors/' + path, getAuthorTemplate);
     };
 
-    var getSectionTemplate = function(t) {
+    var getSectionTemplate = function (t) {
         if (verifyLoggedIn() === false) {
             return;
         }
         custom.updateActive("#section-nav", "#sub-nav li");
         getTemplate(t, "Sections", "#section-template", ".content-placeholder", undefined,
-                "/api/v1/sections", remoteJson, function() {
+                "/api/v1/sections", remoteJson, function () {
                     $("#section-table").tablesorter({
                         theme : 'bootstrap',
                         headerTemplate : '{content} {icon}',
@@ -143,15 +147,15 @@ var cmsAdmin = (function() {
                 });
     };
 
-    var getSectionCreateTemplate = function(t) {
+    var getSectionCreateTemplate = function (t) {
         custom.updateActive("#section-nav", "#sub-nav li");
         getTemplate(t, "Sections", "#section-update-template");
         $("#section-form").validate({
             rules : {
                 title : "required",
             },
-            submitHandler : function() {
-                sendFormData("/api/v1/sections", "POST", getFormData("#section-form"), function(data) {
+            submitHandler : function () {
+                sendFormData("/api/v1/sections", "POST", addAuthEntity("#section-form"), function (data) {
                     getMsgTemplate("#success-template", "Section was created");
                     getSectionTemplate(5000);
                 });
@@ -159,18 +163,18 @@ var cmsAdmin = (function() {
         });
     };
 
-    var getSectionUpdateTemplate = function(t, path) {
+    var getSectionUpdateTemplate = function (t, path) {
         custom.updateActive("#section-nav", "#sub-nav li");
         getMetricTemplate("/api/v1/metrics/sections/" + path, "#metric-template");
         getTemplate(t, "Sections", "#section-update-template", ".content-placeholder", undefined,
-                "/api/v1/sections/" + path, remoteJson, function() {
+                "/api/v1/sections/" + path, remoteJson, function () {
                     $("#section-form").validate({
                         rules : {
                             title : "required",
                         },
-                        submitHandler : function() {
-                            sendFormData("/api/v1/sections/" + path, "PUT", getFormData("#section-form"),
-                                    function(data) {
+                        submitHandler : function () {
+                            sendFormData("/api/v1/sections/" + path, "PUT", addAuthEntity("#section-form"),
+                                    function (data) {
                                         getMsgTemplate("#success-template", "Section was updated");
                                         getSectionTemplate(5000);
                                     });
@@ -179,17 +183,17 @@ var cmsAdmin = (function() {
                 });
     };
 
-    var getSectionDeleteTemplate = function(path) {
+    var getSectionDeleteTemplate = function (path) {
         deleteResource('sections/' + path, getSectionTemplate);
     };
 
-    var getArticleTemplate = function(t) {
+    var getArticleTemplate = function (t) {
         if (verifyLoggedIn() === false) {
             return;
         }
         custom.updateActive("#article-nav", "#sub-nav li");
         getTemplate(t, "Articles", "#article-template", ".content-placeholder", undefined,
-                "/api/v1/articles", remoteJson, function() {
+                "/api/v1/articles", remoteJson, function () {
                     $("#article-table").tablesorter({
                         theme : 'bootstrap',
                         headerTemplate : '{content} {icon}',
@@ -201,17 +205,17 @@ var cmsAdmin = (function() {
                 });
     };
 
-    var getArticleCreateTemplate = function(t) {
+    var getArticleCreateTemplate = function (t) {
         custom.updateActive("#article-nav", "#sub-nav li");
         getTemplate(t, "Articles", "#article-update-template", ".content-placeholder", undefined,
-                "/api/v1/articles/-1", remoteJson, function() {
+                "/api/v1/articles/-1", remoteJson, function () {
                     $("#article-form").validate({
                         rules : {
                             title : "required",
                             content : "required",
                         },
-                        submitHandler : function() {
-                            sendFormData("/api/v1/articles", "POST", getFormData("#article-form"), function(data) {
+                        submitHandler : function () {
+                            sendFormData("/api/v1/articles", "POST", addAuthEntity("#article-form"), function (data) {
                                 getMsgTemplate("#success-template", "Article was created");
                                 getArticleTemplate(5000);
                             });
@@ -220,19 +224,19 @@ var cmsAdmin = (function() {
                 });
     };
 
-    var getArticleUpdateTemplate = function(t, path) {
+    var getArticleUpdateTemplate = function (t, path) {
         custom.updateActive("#article-nav", "#sub-nav li");
         getMetricTemplate("/api/v1/metrics/articles/" + path, "#metric-template");
         getTemplate(t, "Articles", "#article-update-template", ".content-placeholder", undefined,
-                "/api/v1/articles/" + path, remoteJson, function() {
+                "/api/v1/articles/" + path, remoteJson, function () {
                     $("#article-form").validate({
                         rules : {
                             title : "required",
                             content : "required",
                         },
-                        submitHandler : function() {
-                            sendFormData("/api/v1/articles/" + path, "PUT", getFormData("#article-form"),
-                                    function(data) {
+                        submitHandler : function () {
+                            sendFormData("/api/v1/articles/" + path, "PUT", addAuthEntity("#article-form"),
+                                    function (data) {
                                         getMsgTemplate("#success-template", "Article was updated");
                                         getArticleTemplate(5000);
                                     });
@@ -241,17 +245,17 @@ var cmsAdmin = (function() {
                 });
     };
 
-    var getArticleDeleteTemplate = function(path) {
+    var getArticleDeleteTemplate = function (path) {
         deleteResource('articles/' + path, getArticleTemplate);
     };
 
-    var getFileTemplate = function(t) {
+    var getFileTemplate = function (t) {
         if (verifyLoggedIn() === false) {
             return;
         }
         custom.updateActive("#file-nav", "#sub-nav li");
         getTemplate(t, "Files", "#file-template", ".content-placeholder", undefined,
-                "/api/v1/files", remoteJson, function() {
+                "/api/v1/files", remoteJson, function () {
                     $("#file-table").tablesorter({
                         theme : 'bootstrap',
                         headerTemplate : '{content} {icon}',
@@ -264,17 +268,17 @@ var cmsAdmin = (function() {
                 });
     };
 
-    var getFileCreateTemplate = function(t) {
+    var getFileCreateTemplate = function (t) {
         custom.updateActive("#file-nav", "#sub-nav li");
         getTemplate(t, "Files", "#file-update-template", ".content-placeholder", undefined,
-                "/api/v1/files/-1", remoteJson, function() {
+                "/api/v1/files/-1", remoteJson, function () {
                     $("#file-form").validate({
                         rules : {
                             filename : "required",
                             file : "required",
                         },
-                        submitHandler : function() {
-                            sendFormWithFileData("/api/v1/files", "POST", "#file-form", function(data) {
+                        submitHandler : function () {
+                            sendFormWithFileData("/api/v1/files", "POST", "#file-form", function (data) {
                                 getMsgTemplate("#success-template", "File was created");
                                 getFileTemplate(5000);
                             });
@@ -283,18 +287,18 @@ var cmsAdmin = (function() {
                 });
     };
 
-    var getFileUpdateTemplate = function(t, path) {
+    var getFileUpdateTemplate = function (t, path) {
         custom.updateActive("#file-nav", "#sub-nav li");
         getTemplate(t, "Files", "#file-update-template",
                 ".content-placeholder", undefined, "/api/v1/files/" + path,
-                remoteJson, function() {
+                remoteJson, function () {
                     $("#file-form").validate({
                         rules : {
                             filename : "required",
                         },
-                        submitHandler : function() {
-                            sendFormData("/api/v1/files/" + path, "PUT", getFormData("#file-form"),
-                                    function(data) {
+                        submitHandler : function () {
+                            sendFormData("/api/v1/files/" + path, "PUT", addAuthEntity("#file-form"),
+                                    function (data) {
                                         getMsgTemplate("#success-template", "File was updated");
                                         getFileTemplate(5000);
                                     });
@@ -304,17 +308,17 @@ var cmsAdmin = (function() {
                 });
     };
 
-    var getFileDeleteTemplate = function(path) {
+    var getFileDeleteTemplate = function (path) {
         deleteResource('files/' + path, getFileTemplate);
     };
     
-    var getArchiveTemplate = function(t) {
+    var getArchiveTemplate = function (t) {
         if (verifyLoggedIn() === false) {
             return;
         }
         custom.updateActive("#archive-nav", "#sub-nav li");
         getTemplate(t, "Archives", "#archive-template", ".content-placeholder", undefined,
-                "/api/v1/archives", remoteJson, function() {
+                "/api/v1/archives", remoteJson, function () {
                     $("#archive-table").tablesorter({
                         theme : 'bootstrap',
                         headerTemplate : '{content} {icon}',
@@ -326,13 +330,74 @@ var cmsAdmin = (function() {
                 });
     };
     
-    var getCommentTemplate = function(t) {
+    var getTagTemplate = function (t) {
+        if (verifyLoggedIn() === false) {
+            return;
+        }
+        custom.updateActive("#tag-nav", "#sub-nav li");
+        getTemplate(t, "Tags", "#tag-template", ".content-placeholder", undefined,
+                "/api/v1/tags", remoteJson, function () {
+                    $("#tag-table").tablesorter({
+                        theme : 'bootstrap',
+                        headerTemplate : '{content} {icon}',
+                        widgets : [ "uitheme" ],
+                        sortList : [ 0, 0 ]
+                    });
+                    getMetricTemplate("/api/v1/metrics", "#metric-template");
+                    $('[data-toggle="tooltip"]').tooltip();
+                });
+    };
+    
+    var getTagCreateTemplate = function (t) {
+        custom.updateActive("#tag-nav", "#sub-nav li");
+        getTemplate(t, "Tags", "#tag-update-template", ".content-placeholder", undefined,
+                "/api/v1/tags/-1", remoteJson, function () {
+                    $("#tag-form").validate({
+                        rules : {
+                            title : "required",
+                        },
+                        submitHandler : function () {
+                            sendFormData("/api/v1/tags", "POST", addAuthEntity("#tag-form", "articles",
+                                    getFormDataWithMultiCheckbox), function (data) {
+                                        getMsgTemplate("#success-template", "Tag was created");
+                                        getTagTemplate(5000);
+                                    });
+                        }
+                    });
+                });
+    };
+    
+    var getTagUpdateTemplate = function (t, path) {
+        custom.updateActive("#tag-nav", "#sub-nav li");
+        getMetricTemplate("/api/v1/metrics/tags/" + path, "#metric-template");
+        getTemplate(t, "Tags", "#tag-update-template", ".content-placeholder", undefined,
+                "/api/v1/tags/" + path, remoteJson, function () {
+                    $("#tag-form").validate({
+                        rules : {
+                            title : "required",
+                        },
+                        submitHandler : function () {
+                            sendFormData("/api/v1/tags/" + path, "PUT", addAuthEntity("#tag-form", "articles",
+                                    getFormDataWithMultiCheckbox), function (data) {
+                                        getMsgTemplate("#success-template", "Tag was updated");
+                                        getTagTemplate(5000);
+                                    });
+                        }
+                    });
+                });
+    };
+    
+    var getTagDeleteTemplate = function (path) {
+        deleteResource('tags/' + path, getTagTemplate);
+    };
+    
+    var getCommentTemplate = function (t) {
         if (verifyLoggedIn() === false) {
             return;
         }
         custom.updateActive("#comment-nav", "#sub-nav li");
         getTemplate(t, "Comments", "#comment-template", ".content-placeholder", undefined,
-                "/api/v1/comments", remoteJson, function() {
+                "/api/v1/comments", remoteJson, function () {
                     $("#comment-table").tablesorter({
                         theme : 'bootstrap',
                         headerTemplate : '{content} {icon}',
@@ -344,10 +409,10 @@ var cmsAdmin = (function() {
                 });
     };
     
-    var getCommentCreateTemplate = function(t) {
+    var getCommentCreateTemplate = function (t) {
         custom.updateActive("#comment-nav", "#sub-nav li");
         getTemplate(t, "Comments", "#comment-update-template", ".content-placeholder", undefined,
-                "/api/v1/comments/-1", remoteJson, function() {
+                "/api/v1/comments/-1", remoteJson, function () {
                     $("#comment-form").validate({
                         rules : {
                             email : {
@@ -356,8 +421,8 @@ var cmsAdmin = (function() {
                             },
                             content : "required",
                         },
-                        submitHandler : function() {
-                            sendFormData("/api/v1/comments", "POST", getFormData("#comment-form"), function(data) {
+                        submitHandler : function () {
+                            sendFormData("/api/v1/comments", "POST", addAuthEntity("#comment-form"), function (data) {
                                 getMsgTemplate("#success-template", "Comment was created");
                                 getCommentTemplate(5000);
                             });
@@ -366,10 +431,10 @@ var cmsAdmin = (function() {
                 });
     };
     
-    var getCommentUpdateTemplate = function(t, path) {
+    var getCommentUpdateTemplate = function (t, path) {
         custom.updateActive("#comment-nav", "#sub-nav li");
         getTemplate(t, "Comments", "#comment-update-template", ".content-placeholder", undefined,
-                "/api/v1/comments/" + path, remoteJson, function() {
+                "/api/v1/comments/" + path, remoteJson, function () {
                     $("#comment-form").validate({
                         rules : {
                             email : {
@@ -378,9 +443,9 @@ var cmsAdmin = (function() {
                             },
                             content : "required",
                         },
-                        submitHandler : function() {
-                            sendFormData("/api/v1/comments/" + path, "PUT", getFormData("#comment-form"),
-                                    function(data) {
+                        submitHandler : function () {
+                            sendFormData("/api/v1/comments/" + path, "PUT", addAuthEntity("#comment-form"),
+                                    function (data) {
                                         getMsgTemplate("#success-template", "Comment was updated");
                                         getCommentTemplate(5000);
                                     });
@@ -389,11 +454,11 @@ var cmsAdmin = (function() {
                 });
     };
     
-    var getCommentDeleteTemplate = function(path) {
+    var getCommentDeleteTemplate = function (path) {
         deleteResource('comments/' + path, getCommentTemplate);
     };
 
-    var getTemplate = function(t, pageTitle, templateId, target, context, url, func, cb) {
+    var getTemplate = function (t, pageTitle, templateId, target, context, url, func, cb) {
         clearMsg(t);
         $("#page-title").text(pageTitle);
         var source = $(templateId).html();
@@ -406,7 +471,7 @@ var cmsAdmin = (function() {
         }
     };
 
-    var getSidebarTemplate = function() {
+    var getSidebarTemplate = function () {
         var user = getCurrentUser();
         var source = $("#sidebar-template").html();
         var template = Handlebars.compile(source);
@@ -415,13 +480,13 @@ var cmsAdmin = (function() {
         $(".sidebar-placeholder").html(html);
     };
 
-    var getMetricTemplate = function(url, templateId) {
+    var getMetricTemplate = function (url, templateId) {
         var source = $(templateId).html();
         var template = Handlebars.compile(source);
         remoteJson(url, template, ".metric-placeholder");
     };
 
-    var getMsgTemplate = function(templateId, msg) {
+    var getMsgTemplate = function (templateId, msg) {
         var source = $(templateId).html();
         var template = Handlebars.compile(source);
         var context = {"message" : msg};
@@ -429,44 +494,29 @@ var cmsAdmin = (function() {
         $(".js-msg-placeholder").append(html);
     };
 
-    var clearMsg = function(t) {
+    var clearMsg = function (t) {
         if (t === undefined) {
             t = 0;
         }
-        setTimeout(function() {
+        setTimeout(function () {
             $(".js-msg-placeholder").empty();
         }, t);
     };
 
-    var checkResult = function(context, cb) {
+    var checkResult = function (context, cb) {
         if (context.hasOwnProperty('error')) {
             getMsgTemplate("#error-template", context.error);
             return context;
         } else if (context.hasOwnProperty('success')) {
             getMsgTemplate("#success-template", context.success);
         }
-        if (undefined !== cb) {
+        if (cb !== undefined) {
             cb(context);
         }
-        // clear on success form?
         return context;
     };
 
-    var authenticate = function(formId) {
-        var formInputs = $(formId + ' :input').not(':input[type=button], :input[type=submit]');
-        var obj = {};
-        formInputs.each(function() {
-            var cc = $.camelCase(this.id);
-            if ($(this).is(':checkbox')) {
-                obj[cc] = $(this).is(':checked');
-            } else {
-                obj[cc] = $(this).val();
-            }
-        });
-        return obj;
-    };
-
-    var verifyLoggedIn = function() {
+    var verifyLoggedIn = function () {
         if (getCurrentUser() === undefined) {
             getMsgTemplate("#error-template", "Please log in to continue");
             getLoginTemplate(5000);
@@ -474,21 +524,50 @@ var cmsAdmin = (function() {
         }
         return true;
     };
-
-    var updateDownloadLink = function() {
+    
+    var updateDownloadLink = function () {
         var auth = getToken();
-        $(".download").each(function(index) {
+        $(".download").each(function (index) {
             var id = $(this).attr("href");
             $(this).attr("href", "/api/v1/files/" + id + "?" + $.param({"download" : true, "auth" : auth}));
         });
     };
-
-    // TODO move auth into separate function
-    var getFormData = function(formId) {
+    
+    var addAuthEntity = function (formId, name, cb) {
+        var obj = {};
+        if (cb !== undefined) {
+            obj = cb(formId, name);
+        } else {
+            obj = getFormData(formId);
+        }
+        var result = {};
+        result.auth = getToken();
+        result.entity = obj;
+        return result;
+    };
+    
+    var getFormDataWithMultiCheckbox = function (formId, name) {
         var formInputs = $(formId + ' :input').not(':input[type=button], :input[type=submit]');
         var obj = {};
-        var result = {};
-        formInputs.each(function() {
+        obj[name] = [];
+        formInputs.each(function () {
+            var cc = $.camelCase(this.id);
+            if ($(this).is(':checkbox')) {
+                var id = this.id.split('-')[1];
+                var current = $(this).is(':checked');
+                obj[name].push({"id" : id, "current" : current});
+            } else {
+                obj[cc] = $(this).val();
+            }
+        });
+        console.log(obj);
+        return obj;
+    };
+
+    var getFormData = function (formId) {
+        var formInputs = $(formId + ' :input').not(':input[type=button], :input[type=submit]');
+        var obj = {};
+        formInputs.each(function () {
             var cc = $.camelCase(this.id);
             if ($(this).is(':checkbox')) {
                 obj[cc] = $(this).is(':checked');
@@ -496,12 +575,11 @@ var cmsAdmin = (function() {
                 obj[cc] = $(this).val();
             }
         });
-        result.entity = obj;
-        result.auth = getToken(); // add auth token
-        return result;
+        console.log(obj);
+        return obj;
     };
 
-    var sendFormData = function(url, method, data, cb) {
+    var sendFormData = function (url, method, data, cb) {
         $.ajax({
             url : url,
             type : method,
@@ -509,17 +587,17 @@ var cmsAdmin = (function() {
             data : JSON.stringify(data),
             dataType : "json"
         })
-        .done(function(data) {
+        .done(function (data) {
             console.log(data);
             checkResult(data, cb);
         })
-        .fail(function(e) {
+        .fail(function (e) {
             getMsgTemplate("#error-template", "There was an issue communicating with the server.");
         });
     };
 
     // TODO make more generic
-    var sendFormWithFileData = function(url, method, data, cb) {
+    var sendFormWithFileData = function (url, method, data, cb) {
         var auth = getToken();
         var selected = $("#articleId").val();
         var formData = new FormData($(data)[0]);
@@ -534,21 +612,21 @@ var cmsAdmin = (function() {
             data : formData,
             dataType: "json"
         })
-        .done(function(data) {
+        .done(function (data) {
             console.log(data);
             checkResult(data, cb);
         })
-        .fail(function(e) {
+        .fail(function (e) {
             getMsgTemplate("#error-template", "There was an issue communicating with the server.");
         });
     };
 
-    var remoteJson = function(url, template, target, cb) {
+    var remoteJson = function (url, template, target, cb) {
         var obj = {};
         obj.auth = getToken();
         $.getJSON(url, obj, {  
         })
-        .done(function(data) {
+        .done(function (data) {
             var context = data;
             checkResult(context);
             var html = template(context);
@@ -557,31 +635,31 @@ var cmsAdmin = (function() {
                 cb();
             }
         })
-        .fail(function(e) {
+        .fail(function (e) {
             getMsgTemplate("#error-template", "There was an issue communicating with the server.");
         });
     };
 
-    var deleteResource = function(path, cb) {
+    var deleteResource = function (path, cb) {
         var auth = getToken();
-        sendFormData("/api/v1/" + path + "?" + $.param({"auth" : auth}), "DELETE", undefined, function(data) {
+        sendFormData("/api/v1/" + path + "?" + $.param({"auth" : auth}), "DELETE", undefined, function (data) {
             cb(5000);
         });
     };
 
-    var getToken = function() {
+    var getToken = function () {
         return token;
     };
 
-    var setToken = function(data) {
+    var setToken = function (data) {
         token = data;
     };
 
-    var getCurrentUser = function() {
+    var getCurrentUser = function () {
         return currentUser;
     };
 
-    var setCurrentUser = function(data) {
+    var setCurrentUser = function (data) {
         currentUser = data;
     };
 
@@ -604,6 +682,10 @@ var cmsAdmin = (function() {
         getFileUpdateTemplate : getFileUpdateTemplate,
         getFileDeleteTemplate : getFileDeleteTemplate,
         getArchiveTemplate : getArchiveTemplate,
+        getTagTemplate : getTagTemplate,
+        getTagCreateTemplate : getTagCreateTemplate,
+        getTagUpdateTemplate : getTagUpdateTemplate,
+        getTagDeleteTemplate : getTagDeleteTemplate,
         getCommentTemplate : getCommentTemplate,
         getCommentCreateTemplate : getCommentCreateTemplate,
         getCommentUpdateTemplate : getCommentUpdateTemplate,
@@ -614,9 +696,9 @@ var cmsAdmin = (function() {
         getMsgTemplate : getMsgTemplate,
         clearMsg : clearMsg,
         checkResult : checkResult,
-        authenticate : authenticate,
         verifyLoggedIn : verifyLoggedIn,
         updateDownloadLink : updateDownloadLink,
+        addAuthEntity : addAuthEntity,
         getFormData : getFormData,
         sendFormData : sendFormData,
         sendFormWithFileData : sendFormWithFileData,
