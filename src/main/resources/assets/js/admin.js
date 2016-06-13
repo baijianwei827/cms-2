@@ -28,6 +28,10 @@ var cmsAdmin = (function () {
         cmsAdmin.getArchiveTemplate();
     });
     
+    $("#feature-nav").click(function () {
+        cmsAdmin.getFeatureTemplate();
+    });
+    
     $("#tag-nav").click(function () {
         cmsAdmin.getTagTemplate();
     });
@@ -328,6 +332,65 @@ var cmsAdmin = (function () {
                     getMetricTemplate("/api/v1/metrics", "#metric-template");
                     $('[data-toggle="tooltip"]').tooltip();
                 });
+    };
+    
+    var getFeatureTemplate = function (t) {
+        if (verifyLoggedIn() === false) {
+            return;
+        }
+        custom.updateActive("#feature-nav", "#sub-nav li");
+        getTemplate(t, "Features", "#feature-template", ".content-placeholder", undefined,
+                "/api/v1/features", remoteJson, function () {
+                    $("#feature-table").tablesorter({
+                        theme : 'bootstrap',
+                        headerTemplate : '{content} {icon}',
+                        widgets : [ "uitheme" ],
+                        sortList : [ 0, 0 ]
+                    });
+                    getMetricTemplate("/api/v1/metrics", "#metric-template");
+                    $('[data-toggle="tooltip"]').tooltip();
+                });
+    };
+    
+    var getFeatureCreateTemplate = function (t) {
+        custom.updateActive("#feature-nav", "#sub-nav li");
+        getTemplate(t, "Features", "#feature-update-template", ".content-placeholder", undefined,
+                "/api/v1/features/-1", remoteJson, function () {
+                    $("#feature-form").validate({
+                        rules : {
+                            articleId : "required",
+                        },
+                        submitHandler : function () {
+                            sendFormData("/api/v1/features", "POST", addAuthEntity("#feature-form"), function (data) {
+                                getMsgTemplate("#success-template", "Feature was created");
+                                getFeatureTemplate(5000);
+                            });
+                        }
+                    });
+                });
+    };
+    
+    var getFeatureUpdateTemplate = function (t, path) {
+        custom.updateActive("#feature-nav", "#sub-nav li");
+        getTemplate(t, "Features", "#feature-update-template", ".content-placeholder", undefined,
+                "/api/v1/features/" + path, remoteJson, function () {
+                    $("#feature-form").validate({
+                        rules : {
+                            articleId : "required",
+                        },
+                        submitHandler : function () {
+                            sendFormData("/api/v1/features/" + path, "PUT", addAuthEntity("#feature-form"),
+                                    function (data) {
+                                        getMsgTemplate("#success-template", "Feature was updated");
+                                        getFeatureTemplate(5000);
+                                    });
+                        }
+                    });
+                });
+    };
+    
+    var getFeatureDeleteTemplate = function (path) {
+        deleteResource('features/' + path, getFeatureTemplate);
     };
     
     var getTagTemplate = function (t) {
@@ -682,6 +745,10 @@ var cmsAdmin = (function () {
         getFileUpdateTemplate : getFileUpdateTemplate,
         getFileDeleteTemplate : getFileDeleteTemplate,
         getArchiveTemplate : getArchiveTemplate,
+        getFeatureTemplate : getFeatureTemplate,
+        getFeatureCreateTemplate : getFeatureCreateTemplate,
+        getFeatureUpdateTemplate : getFeatureUpdateTemplate,
+        getFeatureDeleteTemplate : getFeatureDeleteTemplate,
         getTagTemplate : getTagTemplate,
         getTagCreateTemplate : getTagCreateTemplate,
         getTagUpdateTemplate : getTagUpdateTemplate,
