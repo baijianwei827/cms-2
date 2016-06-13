@@ -84,6 +84,8 @@ public class RestFeatureService {
         for (Article a : articles) {
             if (id == -1 && a.getFeature() != null) {
                 continue;
+            } else if (a.getFeature() != null && a.getId() != featureDto.getArticleId()) {
+                continue;
             }
             ForeignEntity fe;
             if (featureDto.getArticleId() == null) {
