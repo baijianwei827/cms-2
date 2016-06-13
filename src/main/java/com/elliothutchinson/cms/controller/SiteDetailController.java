@@ -10,67 +10,68 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.elliothutchinson.cms.domain.SiteDetail;
 import com.elliothutchinson.cms.dto.AuthEntity;
-import com.elliothutchinson.cms.dto.FeatureDto;
 import com.elliothutchinson.cms.service.AuthenticationService;
-import com.elliothutchinson.cms.service.rest.RestFeatureService;
+import com.elliothutchinson.cms.service.rest.RestSiteDetailService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 @RestController
-@RequestMapping("/api/v1/features")
-public class FeatureController extends AbstractRestController {
+@RequestMapping("/api/v1/sitedetails")
+public class SiteDetailController extends AbstractRestController {
 
-    private RestFeatureService restFeatureService;
+    private RestSiteDetailService restSiteDetailService;
 
     @Autowired
-    public FeatureController(AuthenticationService authenticationService, RestFeatureService restFeatureService) {
+    public SiteDetailController(AuthenticationService authenticationService,
+            RestSiteDetailService restSiteDetailService) {
         super(authenticationService);
-        this.restFeatureService = restFeatureService;
+        this.restSiteDetailService = restSiteDetailService;
     }
     
     @RequestMapping(method = RequestMethod.GET)
-    public String getFeatures(@RequestParam("auth") String auth) throws JsonProcessingException {
+    public String getSiteDetails(@RequestParam("auth") String auth) throws JsonProcessingException {
         authenticationService.verifyAuthentication(auth);
 
-        return restFeatureService.findAllFeatures();
+        return restSiteDetailService.findAllSiteDetails();
     }
     
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> getFeature(@PathVariable Long id, @RequestParam("auth") String auth)
+    public ResponseEntity<?> getSiteDetail(@PathVariable Long id, @RequestParam("auth") String auth)
             throws JsonProcessingException {
         authenticationService.verifyAuthentication(auth);
 
-        String result = restFeatureService.findFeatureFromId(id);
+        String result = restSiteDetailService.findSiteDetailFromId(id);
 
         return new ResponseEntity<String>(result, HttpStatus.OK);
     }
     
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> createFeature(@RequestBody AuthEntity<FeatureDto> authEntity)
+    public ResponseEntity<?> createSiteDetail(@RequestBody AuthEntity<SiteDetail> authEntity)
             throws JsonProcessingException {
         authenticationService.verifyAuthentication(authEntity.getAuth());
 
-        String result = restFeatureService.createFeatureFromProxy(authEntity.getEntity());
+        String result = restSiteDetailService.createSiteDetailFromProxy(authEntity.getEntity());
 
         return new ResponseEntity<String>(result, HttpStatus.CREATED);
     }
     
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateFeature(@PathVariable Long id, @RequestBody AuthEntity<FeatureDto> authEntity)
+    public ResponseEntity<?> updateSiteDetail(@PathVariable Long id, @RequestBody AuthEntity<SiteDetail> authEntity)
             throws JsonProcessingException {
         authenticationService.verifyAuthentication(authEntity.getAuth());
 
-        String result = restFeatureService.updateFeatureFromProxy(id, authEntity.getEntity());
+        String result = restSiteDetailService.updateSiteDetailFromProxy(id, authEntity.getEntity());
 
         return new ResponseEntity<String>(result, HttpStatus.OK);
     }
     
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteFeature(@PathVariable Long id, @RequestParam("auth") String auth)
+    public ResponseEntity<?> deleteSiteDetail(@PathVariable Long id, @RequestParam("auth") String auth)
             throws JsonProcessingException {
         authenticationService.verifyAuthentication(auth);
 
-        String result = restFeatureService.deleteFeatureFromId(id);
+        String result = restSiteDetailService.deleteSiteDetailFromId(id);
 
         return new ResponseEntity<String>(result, HttpStatus.OK);
     }

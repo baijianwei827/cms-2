@@ -39,6 +39,10 @@ var cmsAdmin = (function () {
     $("#comment-nav").click(function () {
         cmsAdmin.getCommentTemplate();
     });
+    
+    $("#site-detail-nav").click(function () {
+        cmsAdmin.getSiteDetailTemplate();
+    });
 
     var getLoginTemplate = function (t) {
         getTemplate(t, "Admin Login", "#login-template");
@@ -520,6 +524,65 @@ var cmsAdmin = (function () {
     var getCommentDeleteTemplate = function (path) {
         deleteResource('comments/' + path, getCommentTemplate);
     };
+    
+    var getSiteDetailTemplate = function (t) {
+        if (verifyLoggedIn() === false) {
+            return;
+        }
+        custom.updateActive("#site-detail-nav", "#sub-nav li");
+        getTemplate(t, "Site Details", "#site-detail-template", ".content-placeholder", undefined,
+                "/api/v1/sitedetails", remoteJson, function () {
+                    $("#site-detail-table").tablesorter({
+                        theme : 'bootstrap',
+                        headerTemplate : '{content} {icon}',
+                        widgets : [ "uitheme" ],
+                        sortList : [ 0, 0 ]
+                    });
+                    getMetricTemplate("/api/v1/metrics", "#metric-template");
+                    $('[data-toggle="tooltip"]').tooltip();
+                });
+    };
+
+    var getSiteDetailCreateTemplate = function (t) {
+        custom.updateActive("#site-detail-nav", "#sub-nav li");
+        getTemplate(t, "Site Details", "#site-detail-update-template");
+        $("#site-detail-form").validate({
+            rules : {
+                name : "required",
+                content : "required",
+            },
+            submitHandler : function () {
+                sendFormData("/api/v1/sitedetails", "POST", addAuthEntity("#site-detail-form"), function (data) {
+                    getMsgTemplate("#success-template", "Site detail was created");
+                    getSiteDetailTemplate(5000);
+                });
+            }
+        });
+    };
+
+    var getSiteDetailUpdateTemplate = function (t, path) {
+        custom.updateActive("#site-detail-nav", "#sub-nav li");
+        getTemplate(t, "Site Details", "#site-detail-update-template", ".content-placeholder", undefined,
+                "/api/v1/sitedetails/" + path, remoteJson, function () {
+                    $("#site-detail-form").validate({
+                        rules : {
+                            name : "required",
+                            content : "required",
+                        },
+                        submitHandler : function () {
+                            sendFormData("/api/v1/sitedetails/" + path, "PUT", addAuthEntity("#site-detail-form"),
+                                    function (data) {
+                                        getMsgTemplate("#success-template", "Section was updated");
+                                        getSiteDetailTemplate(5000);
+                                    });
+                        }
+                    });
+                });
+    };
+
+    var getSiteDetailDeleteTemplate = function (path) {
+        deleteResource('sitedetails/' + path, getSiteDetailTemplate);
+    };
 
     var getTemplate = function (t, pageTitle, templateId, target, context, url, func, cb) {
         clearMsg(t);
@@ -757,6 +820,10 @@ var cmsAdmin = (function () {
         getCommentCreateTemplate : getCommentCreateTemplate,
         getCommentUpdateTemplate : getCommentUpdateTemplate,
         getCommentDeleteTemplate : getCommentDeleteTemplate,
+        getSiteDetailTemplate : getSiteDetailTemplate,
+        getSiteDetailCreateTemplate : getSiteDetailCreateTemplate,
+        getSiteDetailUpdateTemplate : getSiteDetailUpdateTemplate,
+        getSiteDetailDeleteTemplate : getSiteDetailDeleteTemplate,
         getTemplate : getTemplate,
         getSidebarTemplate : getSidebarTemplate,
         getMetricTemplate : getMetricTemplate,
