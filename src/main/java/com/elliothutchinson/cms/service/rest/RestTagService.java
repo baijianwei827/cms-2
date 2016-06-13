@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import com.elliothutchinson.cms.domain.Article;
@@ -136,7 +137,13 @@ public class RestTagService {
         List<Article> articles = articleRepository.findAllByOrderByDateCreatedDesc();
         for (Article a : articles) {
             if (articleIdSet.contains(a.getId())) {
-                tag.addArticle(a);
+                if (!tag.getArticles().contains(a)) {
+                    tag.addArticle(a);
+                }
+            } else {
+                if (tag.getArticles().contains(a)) {
+                    tag.removeArticle(a);
+                }
             }
         }
         
@@ -148,14 +155,20 @@ public class RestTagService {
     public String deleteTagFromId(Long id) throws JsonProcessingException {
         Map<String, String> map = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
-
+        
         Tag tag = tagRepository.findOne(id);
 
         if (tag == null) {
             map.put("error", "There was an error deleting resource: tag not found");
             return mapper.writeValueAsString(map);
         }
-
+        
+        List<Article> articles = tag.getArticles();
+        for (Article a : new ArrayList<>(articles)) {
+            a.removeTag(tag);
+            articleRepository.save(a);
+        }
+        
         tagRepository.delete(tag);
 
         map.put("success", "Tag resource successfully deleted");
