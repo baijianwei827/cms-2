@@ -32,19 +32,16 @@ public class SiteDetail {
     @Column(length = 10000)
     private String content;
 
-    private String filename;
-
     @CreatedDate
     private LocalDateTime dateCreated;
 
     protected SiteDetail() {
     }
 
-    public SiteDetail(String name, String title, String content, String cover) {
+    public SiteDetail(String name, String title, String content) {
         this.name = name;
         this.title = title;
         this.content = content;
-        this.filename = cover;
     }
 
     public long getId() {
@@ -77,14 +74,6 @@ public class SiteDetail {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
     }
 
     public LocalDateTime getDateCreated() {

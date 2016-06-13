@@ -1,5 +1,7 @@
 package com.elliothutchinson.cms.controller;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -20,6 +22,12 @@ public abstract class AbstractRestController {
 
     public AbstractRestController(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
+    }
+    
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<?> ioIssue() {
+        return new ResponseEntity<ErrorMessage>(
+                new ErrorMessage("There was a problem accessing resource: file IO issue"), HttpStatus.OK);
     }
 
     @ExceptionHandler(InvalidAuthTokenException.class)

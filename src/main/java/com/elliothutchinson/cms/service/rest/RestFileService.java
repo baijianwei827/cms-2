@@ -1,8 +1,6 @@
 package com.elliothutchinson.cms.service.rest;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +8,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +19,7 @@ import com.elliothutchinson.cms.dto.ForeignEntity;
 import com.elliothutchinson.cms.repository.ArticleRepository;
 import com.elliothutchinson.cms.repository.FileRepository;
 import com.elliothutchinson.cms.service.ResourceService;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -88,7 +86,7 @@ public class RestFileService {
         return mapper.writeValueAsString(fileDto);
     }
 
-    public String serveFileFromId(Long id, HttpServletResponse response) throws JsonProcessingException {
+    public String serveFileFromId(Long id, HttpServletResponse response) throws IOException {
         Map<String, String> map = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
 
@@ -97,16 +95,8 @@ public class RestFileService {
             map.put("error", "There was a problem requesting resource: file not found");
             return mapper.writeValueAsString(map);
         }
-
-        try {
-            InputStream is = new FileInputStream(File.getRoot() + file.getFilename());
-            IOUtils.copy(is, response.getOutputStream());
-            response.flushBuffer();
-        } catch (IOException e) {
-            e.printStackTrace();
-            map.put("error", "There was a problem accessing resource: file IO issue");
-            return mapper.writeValueAsString(map);
-        }
+        
+        resourceService.getResource(File.getRoot() + file.getFilename(), response);
 
         return "";
     }

@@ -53,7 +53,6 @@ public class TestService {
     }
 
     public void test() {
-
     }
 
     public void initializeData() {
@@ -67,6 +66,7 @@ public class TestService {
         authorRepository.save(new Author("bob", "pass", "b@t.com", true));
         authorRepository.save(new Author("cat", "pass", "c@f.com", false));
         authorRepository.save(new Author("dan", "pass", "d@f.com", false));
+        authorRepository.save(new Author("a", "a", "a@a.com", true));
 
         sectionRepository.save(new Section("Android", "Android description"));
         sectionRepository.save(new Section("Apple", "Apple description"));
@@ -157,10 +157,9 @@ public class TestService {
         featureRepository.save(new Feature(null, true, appleArticle2));
         featureRepository.save(new Feature(null, false, microsoftArticle1));
 
-        siteDetailRepository.save(new SiteDetail("siteName", null, "Tech Future Today", null));
+        siteDetailRepository.save(new SiteDetail("siteName", null, "Tech Future Today"));
         siteDetailRepository.save(new SiteDetail("about", "About",
-                "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est.",
-                null));
+                "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est."));
     }
 
     public void addTags() {

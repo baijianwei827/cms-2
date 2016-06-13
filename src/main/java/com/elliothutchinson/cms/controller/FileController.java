@@ -1,5 +1,7 @@
 package com.elliothutchinson.cms.controller;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +43,7 @@ public class FileController extends AbstractRestController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getFile(@PathVariable Long id,
             @RequestParam(value = "download", defaultValue = "false") String download,
-            @RequestParam("auth") String auth, HttpServletResponse response) throws JsonProcessingException {
+            @RequestParam("auth") String auth, HttpServletResponse response) throws IOException {
         authenticationService.verifyAuthentication(auth);
 
         String result;

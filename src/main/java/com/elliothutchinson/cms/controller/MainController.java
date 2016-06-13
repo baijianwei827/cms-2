@@ -1,5 +1,9 @@
 package com.elliothutchinson.cms.controller;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,16 +12,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.elliothutchinson.cms.domain.Comment;
+import com.elliothutchinson.cms.domain.File;
 import com.elliothutchinson.cms.dto.Authentication;
 import com.elliothutchinson.cms.service.ArchiveService;
 import com.elliothutchinson.cms.service.ArticleService;
 import com.elliothutchinson.cms.service.AuthenticationService;
 import com.elliothutchinson.cms.service.CommentService;
 import com.elliothutchinson.cms.service.FeatureService;
+import com.elliothutchinson.cms.service.ResourceService;
 import com.elliothutchinson.cms.service.SectionService;
 import com.elliothutchinson.cms.service.SiteDetailService;
 import com.elliothutchinson.cms.service.TagService;
@@ -35,6 +42,7 @@ public class MainController {
     private SiteDetailService siteDetailService;
     private CommentService commentService;
     private AuthenticationService authenticationService;
+    private ResourceService resourceService;
 
     public MainController() {
     }
@@ -42,7 +50,8 @@ public class MainController {
     @Autowired
     public MainController(TagService tagService, SectionService sectionService, ArticleService articleService,
             ArchiveService archiveService, FeatureService featureService, SiteDetailService siteDetailService,
-            CommentService commentService, AuthenticationService authenticationService) {
+            CommentService commentService, AuthenticationService authenticationService,
+            ResourceService resourceService) {
         this.tagService = tagService;
         this.sectionService = sectionService;
         this.articleService = articleService;
@@ -51,6 +60,7 @@ public class MainController {
         this.siteDetailService = siteDetailService;
         this.commentService = commentService;
         this.authenticationService = authenticationService;
+        this.resourceService = resourceService;
     }
 
     @RequestMapping("/")
@@ -126,6 +136,15 @@ public class MainController {
         model.addAttribute("siteDetail", siteDetailService.findSiteDetailFromName("about"));
 
         return "site";
+    }
+    
+    @RequestMapping("/files")
+    public void getFile(@RequestParam String filename, HttpServletResponse response) {
+        try {
+            resourceService.getResource(File.getRoot() + filename, response);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @RequestMapping("/admin")
