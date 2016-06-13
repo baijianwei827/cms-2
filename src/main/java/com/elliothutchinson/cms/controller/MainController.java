@@ -32,7 +32,7 @@ import com.elliothutchinson.cms.service.TagService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 @Controller
-public class MainController {
+public class MainController extends AbstractController {
 
     private TagService tagService;
     private SectionService sectionService;
@@ -52,6 +52,7 @@ public class MainController {
             ArchiveService archiveService, FeatureService featureService, SiteDetailService siteDetailService,
             CommentService commentService, AuthenticationService authenticationService,
             ResourceService resourceService) {
+        super();
         this.tagService = tagService;
         this.sectionService = sectionService;
         this.articleService = articleService;
@@ -139,12 +140,8 @@ public class MainController {
     }
     
     @RequestMapping("/files")
-    public void getFile(@RequestParam String filename, HttpServletResponse response) {
-        try {
-            resourceService.getResource(File.getRoot() + filename, response);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void getFile(@RequestParam String filename, HttpServletResponse response) throws IOException {
+        resourceService.getResource(File.getRoot() + filename, response);
     }
 
     @RequestMapping("/admin")
